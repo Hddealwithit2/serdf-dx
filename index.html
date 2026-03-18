@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Undertale Blue: Integrity</title>
+  <style>
+    :root {
+      --bg: #020617;
+      --panel: rgba(15, 23, 42, 0.92);
+      --panel-soft: rgba(30, 41, 59, 0.88);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #60a5fa;
+      --accent-2: #38bdf8;
+      --danger: #f87171;
+      --gold: #facc15;
+      --green: #4ade80;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(59, 130, 246, 0.22), transparent 35%),
+        radial-gradient(circle at bottom, rgba(56, 189, 248, 0.15), transparent 30%),
+        linear-gradient(180deg, #020617 0%, #0f172a 100%);
+      overflow-x: hidden;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 1rem 0 2rem;
+    }
+
+    .hero, .panel {
+      border: 3px solid rgba(96, 165, 250, 0.55);
+      background: var(--panel);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 18px 60px rgba(0,0,0,0.35);
+    }
+
+    .hero {
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(96,165,250,0.08), transparent);
+      transform: translateX(-100%);
+      animation: shine 8s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shine { to { transform: translateX(100%); } }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.7rem);
+      letter-spacing: 0.12rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 60rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    .battle-wrap {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .battle-box {
+      position: relative;
+      height: 420px;
+      border: 4px solid white;
+      background:
+        linear-gradient(180deg, rgba(15,23,42,0.65), rgba(2,6,23,0.92)),
+        radial-gradient(circle at center, rgba(56, 189, 248, 0.15), transparent 60%);
+      overflow: hidden;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      image-rendering: pixelated;
+    }
+
+    .battle-ui {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+    }
+
+    .action {
+      border: 3px solid white;
+      background: rgba(15,23,42,0.8);
+      color: white;
+      padding: 0.9rem 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.12s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .action:hover, .action:focus-visible {
+      transform: translateY(-2px);
+      background: rgba(30,41,59,0.96);
+      border-color: var(--accent-2);
+      outline: none;
+    }
+
+    .hud {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-top: 0.9rem;
+    }
+
+    .stat, .log, .character-card, .guide-card {
+      background: var(--panel-soft);
+      border: 2px solid rgba(148, 163, 184, 0.3);
+      border-radius: 8px;
+      padding: 0.9rem;
+    }
+
+    .meter {
+      height: 14px;
+      background: rgba(15,23,42,0.9);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.12);
+      margin-top: 0.35rem;
+    }
+
+    .meter > span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+
+    .meter.hp > span { background: linear-gradient(90deg, #fb7185, #ef4444); }
+    .meter.mercy > span { background: linear-gradient(90deg, #fde047, #f59e0b); }
+
+    .log {
+      min-height: 120px;
+      white-space: pre-line;
+      line-height: 1.45;
+    }
+
+    .character-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .character-card h3 { margin-bottom: 0.3rem; }
+    .tag {
+      display: inline-block;
+      margin-bottom: 0.75rem;
+      padding: 0.25rem 0.55rem;
+      border: 1px solid rgba(96,165,250,0.45);
+      border-radius: 999px;
+      color: #bfdbfe;
+      font-size: 0.8rem;
+      letter-spacing: 0.04rem;
+      text-transform: uppercase;
+    }
+
+    .timeline {
+      margin-top: 1rem;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .timeline-item {
+      border-left: 4px solid var(--accent);
+      padding-left: 0.9rem;
+      color: var(--text);
+    }
+
+    .credits {
+      margin-top: 1rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .note { color: #bae6fd; }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .battle-ui { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+      .page { width: min(100% - 1rem, 100%); }
+      .hero, .panel { padding: 0.85rem; }
+      .battle-box { height: 360px; }
+      .hud { grid-template-columns: 1fr; }
+      .battle-ui { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <h1>UNDERTALE BLUE: INTEGRITY</h1>
+      <p class="subtitle">
+        A lovingly detailed browser fangame concept where the blue SOUL of Integrity falls into the Underground long before Frisk,
+        crossing paths with a watchful Flowey, the Royal Guard prototype, and a path that values rhythm, honesty, and impossible mercy.
+      </p>
+    </section>
+
+    <section class="grid">
+      <div class="battle-wrap">
+        <div class="panel">
+          <h2>Boss Encounter: Flowey's “Helpful” Tutorial</h2>
+          <p class="note">
+            Move the blue SOUL with <strong>Arrow Keys / WASD</strong>. In blue mode, gravity matters: jump to clear vine rings, land on platforms,
+            and survive long enough to expose Flowey's fake friendliness. Build Mercy to unlock the Integrity route.
+          </p>
+          <div class="battle-box">
+            <canvas id="gameCanvas" width="820" height="420" aria-label="Undertale Blue battle scene"></canvas>
+          </div>
+          <div class="hud">
+            <div class="stat">
+              <strong>Integrity</strong>
+              <div id="playerHpText">HP 24 / 24</div>
+              <div class="meter hp"><span id="playerHpBar" style="width:100%"></span></div>
+            </div>
+            <div class="stat">
+              <strong>Flowey</strong>
+              <div id="floweyMercyText">Mercy 0 / 100</div>
+              <div class="meter mercy"><span id="floweyMercyBar" style="width:0%"></span></div>
+            </div>
+          </div>
+          <div class="log" id="battleLog">* Flowey pops out of the golden flowers.
+* “Howdy! You're new here, aren'tcha?”</div>
+          <div class="battle-ui">
+            <button class="action" id="fightBtn">Fight</button>
+            <button class="action" id="actBtn">Act</button>
+            <button class="action" id="itemBtn">Item</button>
+            <button class="action" id="mercyBtn">Mercy</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <h2>Story Pillars</h2>
+        <div class="character-grid">
+          <article class="character-card">
+            <span class="tag">Human</span>
+            <h3>Integrity</h3>
+            <p>
+              The blue SOUL values truth and follow-through. Their mechanics revolve around momentum, timed leaps, and dialogue choices that reward consistency.
+            </p>
+          </article>
+          <article class="character-card">
+            <span class="tag">Manipulator</span>
+            <h3>Flowey</h3>
+            <p>
+              Flowey appears early and often, pretending to guide Integrity while subtly testing whether this human can be broken, reset, or turned into a weapon.
+            </p>
+          </article>
+          <article class="character-card">
+            <span class="tag">Justice Foil</span>
+            <h3>Clover Cameo</h3>
+            <p>
+              Echoes of <em>Undertale Yellow</em> appear through future-facing motifs, spare-first philosophy, and side scenes that hint at the fate of later fallen humans.
+            </p>
+          </article>
+          <article class="character-card">
+            <span class="tag">Royal Guard</span>
+            <h3>Captain Cerule</h3>
+            <p>
+              An original miniboss who enforces order through floating lances and platform patterns, acting as Integrity's martial mirror.
+            </p>
+          </article>
+        </div>
+
+        <div class="guide-card" style="margin-top:1rem;">
+          <h3>Route Design</h3>
+          <ul>
+            <li><strong>Integrity Route:</strong> Act honestly, protect NPCs, and spare Flowey after seeing through the lie.</li>
+            <li><strong>Fracture Route:</strong> Exploit resets, betray allies, and let Flowey reshape battles.</li>
+            <li><strong>Golden Echo:</strong> Hidden route nodding to <em>Undertale Yellow</em> with dual-SOUL challenge rooms.</li>
+          </ul>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item"><strong>Ruins:</strong> Toriel teaches blue-mode jumps over collapsed tile bridges.</div>
+          <div class="timeline-item"><strong>Snowdin Outskirts:</strong> Integrity learns patterned parries from wandering sentries.</div>
+          <div class="timeline-item"><strong>Waterfall:</strong> Truth trials compare what the player says with what they actually do.</div>
+          <div class="timeline-item"><strong>Core Prototype:</strong> Flowey hijacks save points and narratively “edits” rooms in real time.</div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="panel" style="margin-top:1rem;">
+      <h2>Why it feels like Undertale</h2>
+      <p>
+        This prototype leans on concise dialogue, readable bullet patterns, reactive narration, and route-sensitive themes. Integrity's blue SOUL physics are inspired by Papyrus-style gravity attacks,
+        while the cast focus and hidden route structure nod toward the style of <em>Undertale Yellow</em>. Flowey remains central: charming, omnipresent, and terrifying once the mask slips.
+      </p>
+      <p class="credits">
+        Fan project concept page made as an original browser homage. It is not an official <em>Undertale</em> or <em>Undertale Yellow</em> release.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const state = {
+      phase: 'intro',
+      player: { x: 180, y: 285, w: 18, h: 18, vx: 0, vy: 0, hp: 24, maxHp: 24, grounded: false, invuln: 0 },
+      flowey: { mercy: 0, mood: 'smile' },
+      bullets: [],
+      petals: [],
+      frame: 0,
+      attackTimer: 0,
+      currentAttack: 0,
+      message: '* Flowey pops out of the golden flowers.\n* “Howdy! You\'re new here, aren\'tcha?”',
+      actionCooldown: 0,
+      platforms: [
+        { x: 70, y: 330, w: 170, h: 12 },
+        { x: 290, y: 250, w: 120, h: 12 },
+        { x: 470, y: 305, w: 130, h: 12 },
+        { x: 645, y: 220, w: 110, h: 12 }
+      ]
+    };
+
+    const keys = new Set();
+    const gravity = 0.45;
+    const groundY = 360;
+
+    function logMessage(text) {
+      state.message = text;
+      document.getElementById('battleLog').textContent = text;
+    }
+
+    function updateBars() {
+      const hpPct = Math.max(0, state.player.hp / state.player.maxHp) * 100;
+      const mercyPct = Math.min(100, state.flowey.mercy);
+      document.getElementById('playerHpText').textContent = `HP ${state.player.hp} / ${state.player.maxHp}`;
+      document.getElementById('playerHpBar').style.width = `${hpPct}%`;
+      document.getElementById('floweyMercyText').textContent = `Mercy ${state.flowey.mercy} / 100`;
+      document.getElementById('floweyMercyBar').style.width = `${mercyPct}%`;
+    }
+
+    function spawnPetals() {
+      if (state.frame % 18 === 0) {
+        state.petals.push({
+          x: Math.random() * canvas.width,
+          y: -10,
+          size: 4 + Math.random() * 6,
+          speed: 0.6 + Math.random() * 1.6,
+          drift: (Math.random() - 0.5) * 0.7
+        });
+      }
+    }
+
+    function spawnAttackPattern() {
+      const attacks = [spawnVineRing, spawnRain, spawnLanceSweep];
+      attacks[state.currentAttack % attacks.length]();
+      state.currentAttack += 1;
+      state.attackTimer = 0;
+    }
+
+    function spawnVineRing() {
+      for (let i = 0; i < 10; i++) {
+        const angle = (Math.PI * 2 * i) / 10;
+        state.bullets.push({
+          type: 'vine',
+          x: 410,
+          y: 160,
+          vx: Math.cos(angle) * 1.9,
+          vy: Math.sin(angle) * 1.9,
+          r: 11,
+          life: 240
+        });
+      }
+      logMessage('* Flowey\'s friendliness curls into a ring of thorns.');
+    }
+
+    function spawnRain() {
+      for (let i = 0; i < 14; i++) {
+        state.bullets.push({
+          type: 'drop',
+          x: 40 + i * 52,
+          y: -20 - Math.random() * 140,
+          vx: 0,
+          vy: 2.3 + Math.random() * 1.2,
+          r: 9,
+          life: 260
+        });
+      }
+      logMessage('* Blue pellets fall like cold rain. Stay moving.');
+    }
+
+    function spawnLanceSweep() {
+      for (let i = 0; i < 7; i++) {
+        state.bullets.push({
+          type: 'lance',
+          x: canvas.width + i * 90,
+          y: 85 + i * 40,
+          vx: -3.2,
+          vy: 0,
+          r: 15,
+          life: 320
+        });
+      }
+      logMessage('* A disciplined spear line cuts across the box.');
+    }
+
+    function rectsOverlap(a, b) {
+      return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+    }
+
+    function handlePlayer() {
+      const p = state.player;
+      const left = keys.has('ArrowLeft') || keys.has('a');
+      const right = keys.has('ArrowRight') || keys.has('d');
+      const jump = keys.has('ArrowUp') || keys.has('w') || keys.has(' ');
+
+      if (left) p.vx = Math.max(p.vx - 0.55, -4.2);
+      if (right) p.vx = Math.min(p.vx + 0.55, 4.2);
+      if (!left && !right) p.vx *= 0.8;
+      if (jump && p.grounded) {
+        p.vy = -8.6;
+        p.grounded = false;
+      }
+
+      p.vy += gravity;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.grounded = false;
+
+      if (p.y + p.h >= groundY) {
+        p.y = groundY - p.h;
+        p.vy = 0;
+        p.grounded = true;
+      }
+
+      for (const platform of state.platforms) {
+        const platformRect = { x: platform.x, y: platform.y, w: platform.w, h: platform.h };
+        const playerRect = { x: p.x, y: p.y, w: p.w, h: p.h };
+        if (rectsOverlap(playerRect, platformRect) && p.vy >= 0 && p.y + p.h - p.vy <= platform.y + 6) {
+          p.y = platform.y - p.h;
+          p.vy = 0;
+          p.grounded = true;
+        }
+      }
+
+      p.x = Math.max(8, Math.min(canvas.width - p.w - 8, p.x));
+      if (p.invuln > 0) p.invuln -= 1;
+    }
+
+    function handleBullets() {
+      const p = state.player;
+      for (const bullet of state.bullets) {
+        bullet.x += bullet.vx;
+        bullet.y += bullet.vy;
+        bullet.life -= 1;
+      }
+      state.bullets = state.bullets.filter(b => b.life > 0 && b.x > -40 && b.x < canvas.width + 40 && b.y > -60 && b.y < canvas.height + 60);
+
+      for (const bullet of state.bullets) {
+        const dx = (p.x + p.w / 2) - bullet.x;
+        const dy = (p.y + p.h / 2) - bullet.y;
+        const hitDist = bullet.r + p.w * 0.55;
+        if (dx * dx + dy * dy < hitDist * hitDist && p.invuln <= 0 && state.phase !== 'won' && state.phase !== 'lost') {
+          p.hp = Math.max(0, p.hp - 2);
+          p.invuln = 50;
+          state.flowey.mood = 'wicked';
+          logMessage('* Flowey laughs as the petals bite.\n* “See? In this world...”');
+          updateBars();
+          if (p.hp <= 0) {
+            state.phase = 'lost';
+            logMessage('* Your SOUL cracks under the pressure.\n* Refresh to try the Integrity route again.');
+          }
+          break;
+        }
+      }
+    }
+
+    function drawHeart(x, y, size, color) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(0, size * 0.3);
+      ctx.bezierCurveTo(0, -size * 0.2, -size, -size * 0.2, -size, size * 0.35);
+      ctx.bezierCurveTo(-size, size * 0.8, -size * 0.3, size * 1.1, 0, size * 1.4);
+      ctx.bezierCurveTo(size * 0.3, size * 1.1, size, size * 0.8, size, size * 0.35);
+      ctx.bezierCurveTo(size, -size * 0.2, 0, -size * 0.2, 0, size * 0.3);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawFlowey() {
+      const cx = 410;
+      const cy = 98;
+      const sway = Math.sin(state.frame / 16) * 4;
+      const mood = state.flowey.mood;
+
+      for (let i = 0; i < 8; i++) {
+        const angle = (Math.PI * 2 * i) / 8 + state.frame * 0.01;
+        const px = cx + Math.cos(angle) * 42;
+        const py = cy + Math.sin(angle) * 42 + sway;
+        ctx.fillStyle = '#facc15';
+        ctx.beginPath();
+        ctx.ellipse(px, py, 16, 26, angle, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = '#22c55e';
+      ctx.fillRect(cx - 4, cy + 28, 8, 65);
+      ctx.fillRect(cx - 36, cy + 66 + sway, 72, 6);
+      ctx.fillStyle = '#f8fafc';
+      ctx.beginPath();
+      ctx.arc(cx, cy + sway, 33, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#111827';
+      ctx.beginPath();
+      ctx.arc(cx - 12, cy - 6 + sway, 4.5, 0, Math.PI * 2);
+      ctx.arc(cx + 12, cy - 6 + sway, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = '#111827';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      if (mood === 'wicked') {
+        ctx.arc(cx, cy + 10 + sway, 14, 0.15, Math.PI - 0.15, false);
+      } else if (state.phase === 'won') {
+        ctx.arc(cx, cy + 12 + sway, 13, 0.15, Math.PI - 0.15, true);
+      } else {
+        ctx.arc(cx, cy + 14 + sway, 14, 0.2, Math.PI - 0.2);
+      }
+      ctx.stroke();
+    }
+
+    function drawBackground() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      grad.addColorStop(0, '#0f172a');
+      grad.addColorStop(1, '#020617');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      spawnPetals();
+      state.petals.forEach((petal) => {
+        petal.y += petal.speed;
+        petal.x += petal.drift;
+      });
+      state.petals = state.petals.filter((petal) => petal.y < canvas.height + 20);
+      for (const petal of state.petals) {
+        ctx.fillStyle = 'rgba(250, 204, 21, 0.75)';
+        ctx.beginPath();
+        ctx.ellipse(petal.x, petal.y, petal.size * 0.6, petal.size, Math.PI / 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = '#14532d';
+      ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
+      for (const platform of state.platforms) {
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillRect(platform.x, platform.y, platform.w, platform.h);
+      }
+    }
+
+    function drawBullets() {
+      for (const bullet of state.bullets) {
+        if (bullet.type === 'vine') {
+          ctx.fillStyle = '#4ade80';
+          ctx.beginPath();
+          ctx.arc(bullet.x, bullet.y, bullet.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#166534';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(bullet.x - bullet.r, bullet.y);
+          ctx.lineTo(bullet.x + bullet.r, bullet.y);
+          ctx.stroke();
+        } else if (bullet.type === 'drop') {
+          ctx.fillStyle = '#38bdf8';
+          ctx.beginPath();
+          ctx.moveTo(bullet.x, bullet.y - bullet.r);
+          ctx.lineTo(bullet.x + bullet.r * 0.7, bullet.y + bullet.r);
+          ctx.lineTo(bullet.x - bullet.r * 0.7, bullet.y + bullet.r);
+          ctx.closePath();
+          ctx.fill();
+        } else {
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillRect(bullet.x - bullet.r, bullet.y - 4, bullet.r * 2.6, 8);
+          ctx.fillStyle = '#93c5fd';
+          ctx.beginPath();
+          ctx.moveTo(bullet.x + bullet.r * 1.6, bullet.y);
+          ctx.lineTo(bullet.x + bullet.r * 0.8, bullet.y - 10);
+          ctx.lineTo(bullet.x + bullet.r * 0.8, bullet.y + 10);
+          ctx.closePath();
+          ctx.fill();
+        }
+      }
+    }
+
+    function drawPlayer() {
+      const p = state.player;
+      if (p.invuln > 0 && Math.floor(p.invuln / 5) % 2 === 0) return;
+      drawHeart(p.x + p.w / 2, p.y + p.h / 2 - 4, 8, '#60a5fa');
+      if (p.grounded) {
+        ctx.strokeStyle = 'rgba(191, 219, 254, 0.35)';
+        ctx.beginPath();
+        ctx.arc(p.x + p.w / 2, p.y + p.h + 5, 10, 0, Math.PI);
+        ctx.stroke();
+      }
+    }
+
+    function updateBattle() {
+      state.frame += 1;
+      if (state.phase === 'intro' && state.frame > 90) state.phase = 'battle';
+      if (state.phase === 'battle') {
+        handlePlayer();
+        handleBullets();
+        state.attackTimer += 1;
+        if (state.attackTimer > 120) spawnAttackPattern();
+      }
+
+      if (state.actionCooldown > 0) state.actionCooldown -= 1;
+
+      drawBackground();
+      drawFlowey();
+      drawBullets();
+      drawPlayer();
+
+      ctx.fillStyle = 'rgba(255,255,255,0.08)';
+      ctx.font = '16px Trebuchet MS';
+      ctx.fillText('Blue SOUL Mode • Integrity survives by timing and honesty', 18, 28);
+
+      if (state.phase === 'won') {
+        ctx.fillStyle = 'rgba(15,23,42,0.82)';
+        ctx.fillRect(110, 135, 600, 110);
+        ctx.strokeStyle = '#fde047';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(110, 135, 600, 110);
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '28px Trebuchet MS';
+        ctx.fillText('Integrity Route Unlocked', 250, 180);
+        ctx.font = '18px Trebuchet MS';
+        ctx.fillText('You spared Flowey after seeing through the act.', 205, 214);
+      }
+
+      if (state.phase !== 'lost') requestAnimationFrame(updateBattle);
+    }
+
+    function gainMercy(amount, message) {
+      if (state.phase === 'lost') return;
+      state.flowey.mercy = Math.min(100, state.flowey.mercy + amount);
+      state.flowey.mood = state.flowey.mercy >= 70 ? 'wicked' : 'smile';
+      updateBars();
+      logMessage(message);
+      if (state.flowey.mercy >= 100) {
+        state.phase = 'won';
+        state.bullets = [];
+        state.flowey.mood = 'smile';
+        logMessage('* Flowey freezes when you refuse to play his game.\n* Mercy turns the trap into a confession.');
+      }
+    }
+
+    document.getElementById('fightBtn').addEventListener('click', () => {
+      if (state.actionCooldown > 0 || state.phase === 'won' || state.phase === 'lost') return;
+      state.actionCooldown = 25;
+      state.flowey.mood = 'wicked';
+      state.bullets.push({ type: 'vine', x: 410, y: 120, vx: 0, vy: 2.4, r: 18, life: 120 });
+      logMessage('* You lash out, but Flowey only grins wider.\n* Violence makes the room smaller.');
+    });
+
+    document.getElementById('actBtn').addEventListener('click', () => {
+      if (state.actionCooldown > 0 || state.phase === 'won' || state.phase === 'lost') return;
+      state.actionCooldown = 25;
+      gainMercy(28, '* You tell the truth: you know Flowey is lying.\n* For a second, his smile twitches.');
+    });
+
+    document.getElementById('itemBtn').addEventListener('click', () => {
+      if (state.actionCooldown > 0 || state.phase === 'won' || state.phase === 'lost') return;
+      state.actionCooldown = 25;
+      state.player.hp = Math.min(state.player.maxHp, state.player.hp + 6);
+      updateBars();
+      logMessage('* You eat a Snowman Piece substitute.\n* The steady taste reminds you who you are.');
+    });
+
+    document.getElementById('mercyBtn').addEventListener('click', () => {
+      if (state.actionCooldown > 0 || state.phase === 'won' || state.phase === 'lost') return;
+      state.actionCooldown = 25;
+      gainMercy(38, '* You offer mercy before Flowey deserves it.\n* Integrity means doing right without applause.');
+    });
+
+    window.addEventListener('keydown', (event) => {
+      const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+      keys.add(key);
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(event.key)) event.preventDefault();
+    });
+
+    window.addEventListener('keyup', (event) => {
+      const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+      keys.delete(key);
+    });
+
+    updateBars();
+    updateBattle();
+  </script>
+</body>
+</html>
