@@ -3,158 +3,233 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Undertale Blue: Integrity</title>
+  <title>EMBERHOLLOW</title>
   <style>
     :root {
-      --bg: #020617;
-      --panel: rgba(15, 23, 42, 0.92);
-      --panel-soft: rgba(30, 41, 59, 0.88);
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --accent: #60a5fa;
-      --accent-2: #38bdf8;
-      --danger: #f87171;
-      --gold: #facc15;
-      --green: #4ade80;
+      --bg: #04030b;
+      --bg-2: #0d1021;
+      --panel: rgba(10, 13, 28, 0.76);
+      --panel-strong: rgba(11, 15, 32, 0.92);
+      --line: rgba(154, 162, 255, 0.28);
+      --text: #edf2ff;
+      --muted: #a2adcf;
+      --accent: #89a7ff;
+      --accent-2: #67e8f9;
+      --gold: #ffd166;
+      --ember: #ff7a59;
+      --green: #7ef0c2;
+      --danger: #ff6b81;
+      --shadow: 0 22px 70px rgba(0, 0, 0, 0.45);
     }
 
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at top, rgba(59, 130, 246, 0.22), transparent 35%),
-        radial-gradient(circle at bottom, rgba(56, 189, 248, 0.15), transparent 30%),
-        linear-gradient(180deg, #020617 0%, #0f172a 100%);
+        radial-gradient(circle at 20% 0%, rgba(103, 232, 249, 0.15), transparent 26%),
+        radial-gradient(circle at 100% 10%, rgba(137, 167, 255, 0.14), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(255, 122, 89, 0.16), transparent 24%),
+        linear-gradient(180deg, #03040a 0%, #080b18 38%, #05060f 100%);
       overflow-x: hidden;
     }
 
-    .page {
-      width: min(1180px, calc(100% - 2rem));
-      margin: 0 auto;
-      padding: 1rem 0 2rem;
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.28) 0 1px, transparent 1.2px),
+        radial-gradient(circle, rgba(255,255,255,0.18) 0 1px, transparent 1.3px);
+      background-size: 140px 140px, 220px 220px;
+      background-position: 0 0, 50px 80px;
+      opacity: 0.24;
+      mix-blend-mode: screen;
     }
 
-    .hero, .panel {
-      border: 3px solid rgba(96, 165, 250, 0.55);
+    .page {
+      width: min(1240px, calc(100% - 24px));
+      margin: 0 auto;
+      padding: 24px 0 40px;
+    }
+
+    .hero,
+    .panel {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
       background: var(--panel);
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 18px 60px rgba(0,0,0,0.35);
+      backdrop-filter: blur(16px);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
     }
 
     .hero {
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      position: relative;
-      overflow: hidden;
+      padding: 32px;
+      margin-bottom: 18px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 22px;
+      align-items: center;
     }
 
-    .hero::after {
+    .hero::after,
+    .panel::after {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(96,165,250,0.08), transparent);
-      transform: translateX(-100%);
-      animation: shine 8s linear infinite;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.22), transparent 35%, rgba(103, 232, 249, 0.18));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
       pointer-events: none;
     }
 
-    @keyframes shine { to { transform: translateX(100%); } }
+    .eyebrow {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #d5ddff;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.74rem;
+      margin-bottom: 14px;
+    }
 
     h1, h2, h3, p { margin-top: 0; }
+
     h1 {
-      font-size: clamp(2rem, 5vw, 3.7rem);
-      letter-spacing: 0.12rem;
-      margin-bottom: 0.35rem;
+      font-size: clamp(2.8rem, 7vw, 5.8rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin-bottom: 14px;
     }
 
-    .subtitle {
-      font-size: 1.05rem;
+    .hero p {
+      font-size: 1.02rem;
+      line-height: 1.72;
       color: var(--muted);
-      max-width: 60rem;
+      max-width: 62ch;
     }
 
-    .grid {
+    .hero-art {
+      min-height: 300px;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 50% 28%, rgba(255, 209, 102, 0.45), transparent 14%),
+        radial-gradient(circle at 60% 38%, rgba(255,255,255,0.24), transparent 16%),
+        linear-gradient(180deg, rgba(137,167,255,0.14), rgba(8,12,28,0.05)),
+        linear-gradient(180deg, #12152c 0%, #0a0d19 100%);
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .hero-art::before {
+      content: "";
+      position: absolute;
+      inset: 10% 12% 14%;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(255,255,255,0.55), transparent 12%),
+        linear-gradient(180deg, rgba(20,22,36,0) 0%, rgba(6,8,18,0.2) 12%, rgba(5,7,17,0.92) 82%),
+        linear-gradient(90deg, transparent 0 8%, rgba(255,255,255,0.04) 8% 10%, transparent 10% 90%, rgba(255,255,255,0.04) 90% 92%, transparent 92% 100%);
+      clip-path: polygon(13% 90%, 23% 72%, 32% 68%, 40% 40%, 48% 34%, 52% 22%, 59% 34%, 67% 42%, 76% 76%, 88% 90%);
+      filter: drop-shadow(0 0 18px rgba(137, 167, 255, 0.3));
+    }
+
+    .hero-art::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 18%;
+      width: 64px;
+      height: 64px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      box-shadow: 0 0 40px rgba(255, 209, 102, 0.65);
+      background: radial-gradient(circle, rgba(255,255,255,1) 0 16%, rgba(255, 209, 102, 0.95) 17% 50%, rgba(255, 209, 102, 0.08) 51% 100%);
+    }
+
+    .hero-stats {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 1rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .hero-stat,
+    .hud-card,
+    .card,
+    .lore-block,
+    .controls {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      border-radius: 18px;
+      padding: 15px;
+    }
+
+    .hero-stat strong,
+    .hud-card strong {
+      display: block;
+      font-size: 1.35rem;
+      margin-bottom: 6px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.22fr 0.78fr;
+      gap: 18px;
       align-items: start;
     }
 
     .panel {
-      padding: 1rem;
-      border-radius: 8px;
+      padding: 20px;
     }
 
-    .battle-wrap {
+    .experience-shell {
       display: grid;
-      gap: 1rem;
+      gap: 16px;
     }
 
-    .battle-box {
+    .arena {
       position: relative;
-      height: 420px;
-      border: 4px solid white;
-      background:
-        linear-gradient(180deg, rgba(15,23,42,0.65), rgba(2,6,23,0.92)),
-        radial-gradient(circle at center, rgba(56, 189, 248, 0.15), transparent 60%);
+      border-radius: 22px;
       overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, rgba(7,10,20,0.92), rgba(5,7,16,1));
+      min-height: 520px;
     }
 
     canvas {
-      width: 100%;
-      height: 100%;
       display: block;
-      image-rendering: pixelated;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      image-rendering: auto;
     }
 
-    .battle-ui {
+    .hud-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.75rem;
-    }
-
-    .action {
-      border: 3px solid white;
-      background: rgba(15,23,42,0.8);
-      color: white;
-      padding: 0.9rem 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.12s ease, background 0.2s ease, border-color 0.2s ease;
-    }
-
-    .action:hover, .action:focus-visible {
-      transform: translateY(-2px);
-      background: rgba(30,41,59,0.96);
-      border-color: var(--accent-2);
-      outline: none;
-    }
-
-    .hud {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.75rem;
-      margin-top: 0.9rem;
-    }
-
-    .stat, .log, .character-card, .guide-card {
-      background: var(--panel-soft);
-      border: 2px solid rgba(148, 163, 184, 0.3);
-      border-radius: 8px;
-      padding: 0.9rem;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
     }
 
     .meter {
-      height: 14px;
-      background: rgba(15,23,42,0.9);
+      height: 12px;
       border-radius: 999px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.12);
-      margin-top: 0.35rem;
+      margin-top: 9px;
+      background: rgba(2, 6, 23, 0.95);
+      border: 1px solid rgba(255,255,255,0.07);
     }
 
     .meter > span {
@@ -162,175 +237,283 @@
       height: 100%;
       border-radius: inherit;
       background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 20px rgba(103, 232, 249, 0.35);
     }
 
-    .meter.hp > span { background: linear-gradient(90deg, #fb7185, #ef4444); }
-    .meter.mercy > span { background: linear-gradient(90deg, #fde047, #f59e0b); }
+    .meter.hp > span { background: linear-gradient(90deg, #ff7b83, #ff9770); }
+    .meter.focus > span { background: linear-gradient(90deg, #7ef0c2, #67e8f9); }
+    .meter.boss > span { background: linear-gradient(90deg, #ffd166, #ff9f43); }
+    .meter.event > span { background: linear-gradient(90deg, #b794f4, #89a7ff); }
 
     .log {
-      min-height: 120px;
+      min-height: 100px;
       white-space: pre-line;
-      line-height: 1.45;
+      line-height: 1.65;
+      color: #dfe7ff;
     }
 
-    .character-grid {
+    .button-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 0.8rem;
-      margin-top: 1rem;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
     }
 
-    .character-card h3 { margin-bottom: 0.3rem; }
+    button {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      color: var(--text);
+      border-radius: 16px;
+      padding: 14px 16px;
+      font: inherit;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: transform 0.16s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover,
+    button:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(103, 232, 249, 0.4);
+      box-shadow: 0 10px 30px rgba(103, 232, 249, 0.12);
+      outline: none;
+    }
+
+    .side-stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .cards,
+    .lore-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .cards {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
     .tag {
       display: inline-block;
-      margin-bottom: 0.75rem;
-      padding: 0.25rem 0.55rem;
-      border: 1px solid rgba(96,165,250,0.45);
+      padding: 6px 10px;
       border-radius: 999px;
-      color: #bfdbfe;
-      font-size: 0.8rem;
-      letter-spacing: 0.04rem;
+      font-size: 0.74rem;
       text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #cfe4ff;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      margin-bottom: 10px;
     }
 
-    .timeline {
-      margin-top: 1rem;
-      display: grid;
-      gap: 0.75rem;
+    ul { padding-left: 18px; color: var(--muted); }
+    li + li { margin-top: 7px; }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
     }
 
-    .timeline-item {
-      border-left: 4px solid var(--accent);
-      padding-left: 0.9rem;
-      color: var(--text);
-    }
-
-    .credits {
-      margin-top: 1rem;
+    .section-title p {
+      margin: 0;
       color: var(--muted);
       font-size: 0.95rem;
     }
 
-    .note { color: #bae6fd; }
-
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: 1fr; }
-      .battle-ui { grid-template-columns: repeat(2, 1fr); }
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.96rem;
     }
 
-    @media (max-width: 560px) {
-      .page { width: min(100% - 1rem, 100%); }
-      .hero, .panel { padding: 0.85rem; }
-      .battle-box { height: 360px; }
-      .hud { grid-template-columns: 1fr; }
-      .battle-ui { grid-template-columns: 1fr; }
+    @media (max-width: 980px) {
+      .hero,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page { width: min(100% - 14px, 100%); padding-top: 14px; }
+      .hero, .panel { border-radius: 20px; padding: 16px; }
+      .hero-stats,
+      .hud-grid,
+      .button-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      h1 { font-size: clamp(2.4rem, 15vw, 4rem); }
+    }
+
+    @media (max-width: 520px) {
+      .hero-stats,
+      .hud-grid,
+      .button-row,
+      .cards { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <main class="page">
     <section class="hero">
-      <h1>UNDERTALE BLUE: INTEGRITY</h1>
-      <p class="subtitle">
-        A lovingly detailed browser fangame concept where the blue SOUL of Integrity falls into the Underground long before Frisk,
-        crossing paths with a watchful Flowey, the Royal Guard prototype, and a path that values rhythm, honesty, and impossible mercy.
-      </p>
-    </section>
-
-    <section class="grid">
-      <div class="battle-wrap">
-        <div class="panel">
-          <h2>Boss Encounter: Flowey's “Helpful” Tutorial</h2>
-          <p class="note">
-            Move the blue SOUL with <strong>Arrow Keys / WASD</strong>. In blue mode, gravity matters: jump to clear vine rings, land on platforms,
-            and survive long enough to expose Flowey's fake friendliness. Build Mercy to unlock the Integrity route.
-          </p>
-          <div class="battle-box">
-            <canvas id="gameCanvas" width="820" height="420" aria-label="Undertale Blue battle scene"></canvas>
+      <div>
+        <span class="eyebrow">Original Metroidvania Concept • 2.5D Atmospheric Demo</span>
+        <h1>EMBERHOLLOW</h1>
+        <p>
+          A completely original action-exploration adventure built around the last lantern-bearer descending into a kingdom of
+          colossal cathedral-caverns, haunted machinery, and ember-fed gods. The mood aims for the same “I need to keep going” pull
+          as top-tier modern metroidvanias while staying visually distinct: layered 2D silhouettes, volumetric light, and painterly 3D-feeling depth.
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <strong>8 Regions</strong>
+            <span>From flooded opera vaults to a vertical city buried in ash.</span>
           </div>
-          <div class="hud">
-            <div class="stat">
-              <strong>Integrity</strong>
-              <div id="playerHpText">HP 24 / 24</div>
-              <div class="meter hp"><span id="playerHpBar" style="width:100%"></span></div>
-            </div>
-            <div class="stat">
-              <strong>Flowey</strong>
-              <div id="floweyMercyText">Mercy 0 / 100</div>
-              <div class="meter mercy"><span id="floweyMercyBar" style="width:0%"></span></div>
-            </div>
+          <div class="hero-stat">
+            <strong>5 Weapon Arts</strong>
+            <span>Lantern blade, air-dash, downward pierce, ember song, and parry bloom.</span>
           </div>
-          <div class="log" id="battleLog">* Flowey pops out of the golden flowers.
-* “Howdy! You're new here, aren'tcha?”</div>
-          <div class="battle-ui">
-            <button class="action" id="fightBtn">Fight</button>
-            <button class="action" id="actBtn">Act</button>
-            <button class="action" id="itemBtn">Item</button>
-            <button class="action" id="mercyBtn">Mercy</button>
+          <div class="hero-stat">
+            <strong>3 Endings</strong>
+            <span>Preserve the light, crown the abyss, or shatter the cycle entirely.</span>
           </div>
         </div>
       </div>
-
-      <aside class="panel">
-        <h2>Story Pillars</h2>
-        <div class="character-grid">
-          <article class="character-card">
-            <span class="tag">Human</span>
-            <h3>Integrity</h3>
-            <p>
-              The blue SOUL values truth and follow-through. Their mechanics revolve around momentum, timed leaps, and dialogue choices that reward consistency.
-            </p>
-          </article>
-          <article class="character-card">
-            <span class="tag">Manipulator</span>
-            <h3>Flowey</h3>
-            <p>
-              Flowey appears early and often, pretending to guide Integrity while subtly testing whether this human can be broken, reset, or turned into a weapon.
-            </p>
-          </article>
-          <article class="character-card">
-            <span class="tag">Justice Foil</span>
-            <h3>Clover Cameo</h3>
-            <p>
-              Echoes of <em>Undertale Yellow</em> appear through future-facing motifs, spare-first philosophy, and side scenes that hint at the fate of later fallen humans.
-            </p>
-          </article>
-          <article class="character-card">
-            <span class="tag">Royal Guard</span>
-            <h3>Captain Cerule</h3>
-            <p>
-              An original miniboss who enforces order through floating lances and platform patterns, acting as Integrity's martial mirror.
-            </p>
-          </article>
-        </div>
-
-        <div class="guide-card" style="margin-top:1rem;">
-          <h3>Route Design</h3>
-          <ul>
-            <li><strong>Integrity Route:</strong> Act honestly, protect NPCs, and spare Flowey after seeing through the lie.</li>
-            <li><strong>Fracture Route:</strong> Exploit resets, betray allies, and let Flowey reshape battles.</li>
-            <li><strong>Golden Echo:</strong> Hidden route nodding to <em>Undertale Yellow</em> with dual-SOUL challenge rooms.</li>
-          </ul>
-        </div>
-
-        <div class="timeline">
-          <div class="timeline-item"><strong>Ruins:</strong> Toriel teaches blue-mode jumps over collapsed tile bridges.</div>
-          <div class="timeline-item"><strong>Snowdin Outskirts:</strong> Integrity learns patterned parries from wandering sentries.</div>
-          <div class="timeline-item"><strong>Waterfall:</strong> Truth trials compare what the player says with what they actually do.</div>
-          <div class="timeline-item"><strong>Core Prototype:</strong> Flowey hijacks save points and narratively “edits” rooms in real time.</div>
-        </div>
-      </aside>
+      <div class="hero-art" aria-hidden="true"></div>
     </section>
 
-    <section class="panel" style="margin-top:1rem;">
-      <h2>Why it feels like Undertale</h2>
-      <p>
-        This prototype leans on concise dialogue, readable bullet patterns, reactive narration, and route-sensitive themes. Integrity's blue SOUL physics are inspired by Papyrus-style gravity attacks,
-        while the cast focus and hidden route structure nod toward the style of <em>Undertale Yellow</em>. Flowey remains central: charming, omnipresent, and terrifying once the mask slips.
-      </p>
-      <p class="credits">
-        Fan project concept page made as an original browser homage. It is not an official <em>Undertale</em> or <em>Undertale Yellow</em> release.
-      </p>
+    <section class="layout">
+      <div class="experience-shell">
+        <section class="panel">
+          <div class="section-title">
+            <div>
+              <h2>Playable Vertical Slice: The Glass Warden</h2>
+              <p>Move, jump, dash, and strike through an original boss arena with layered depth, particles, and reactive combat states.</p>
+            </div>
+          </div>
+          <div class="arena">
+            <canvas id="gameCanvas" width="960" height="540" aria-label="Emberhollow playable encounter"></canvas>
+          </div>
+          <div class="hud-grid" style="margin-top: 16px;">
+            <div class="hud-card">
+              <strong id="hpText">Vitality 9 / 9</strong>
+              <span>The lantern-bearer survives on timing, positioning, and precision.</span>
+              <div class="meter hp"><span id="hpBar" style="width:100%"></span></div>
+            </div>
+            <div class="hud-card">
+              <strong id="focusText">Focus 100 / 100</strong>
+              <span>Spend focus for Ember Song heals or to trigger a momentum dash.</span>
+              <div class="meter focus"><span id="focusBar" style="width:100%"></span></div>
+            </div>
+            <div class="hud-card">
+              <strong id="bossText">Warden Shell 100%</strong>
+              <span>The Glass Warden shifts between lance rain, beam sweep, and slam shockwaves.</span>
+              <div class="meter boss"><span id="bossBar" style="width:100%"></span></div>
+            </div>
+            <div class="hud-card">
+              <strong id="eventText">Phase One</strong>
+              <span>Break the shell to reveal the choir-heart and open the true ending route.</span>
+              <div class="meter event"><span id="eventBar" style="width:36%"></span></div>
+            </div>
+          </div>
+          <div class="controls" style="margin-top: 16px;">
+            <strong>Controls</strong>
+            <p style="margin: 8px 0 0; color: var(--muted); line-height: 1.7;">
+              <strong>Move:</strong> A / D or Arrow Keys • <strong>Jump:</strong> W / ↑ / Space • <strong>Dash:</strong> Shift •
+              <strong>Slash:</strong> J • <strong>Heal:</strong> K • <strong>Reset Demo:</strong> R
+            </p>
+          </div>
+          <div class="log card" id="battleLog" style="margin-top: 16px;">The lantern stirs.
+The Glass Warden rises from its shrine, reflecting a dead kingdom in fractured light.</div>
+          <div class="button-row" style="margin-top: 16px;">
+            <button id="slashBtn">Slash</button>
+            <button id="dashBtn">Dash</button>
+            <button id="healBtn">Ember Song</button>
+            <button id="resetBtn">Reset</button>
+          </div>
+        </section>
+      </div>
+
+      <aside class="side-stack">
+        <section class="panel">
+          <div class="section-title">
+            <div>
+              <h2>World Pillars</h2>
+              <p>An all-new universe designed for exploration, melancholy, and mythic scale.</p>
+            </div>
+          </div>
+          <div class="cards">
+            <article class="card">
+              <span class="tag">Protagonist</span>
+              <h3>The Lantern-Bearer</h3>
+              <p style="color: var(--muted); line-height: 1.7;">
+                A nameless courier awakened by a sentient flame and tasked with deciding whether the buried kingdom deserves renewal.
+              </p>
+            </article>
+            <article class="card">
+              <span class="tag">Antagonist</span>
+              <h3>The Choir Below</h3>
+              <p style="color: var(--muted); line-height: 1.7;">
+                A hive of fused voices singing through crystal roots, able to rewrite memory, geography, and loyalty.
+              </p>
+            </article>
+            <article class="card">
+              <span class="tag">Traversal</span>
+              <h3>2.5D Dreamscapes</h3>
+              <p style="color: var(--muted); line-height: 1.7;">
+                Foreground silhouettes, drifting dust, and shifting light planes make each chamber feel sculpted instead of flat.
+              </p>
+            </article>
+            <article class="card">
+              <span class="tag">Hook</span>
+              <h3>Memory-Driven Storytelling</h3>
+              <p style="color: var(--muted); line-height: 1.7;">
+                Every boss stores a memory shard that unlocks new traversal powers and changes how NPCs speak about the fall.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-title">
+            <div>
+              <h2>Campaign Structure</h2>
+              <p>A prestige-scale outline built to feel expansive, cohesive, and replayable.</p>
+            </div>
+          </div>
+          <div class="lore-grid">
+            <div class="lore-block">
+              <h3>Act I — Ashen Bell</h3>
+              <p style="color: var(--muted); line-height: 1.7;">Wake in a chapel at the mouth of the undercity, learn the lantern blade, and glimpse the sleeping titan beneath the capital.</p>
+            </div>
+            <div class="lore-block">
+              <h3>Act II — The Drowned Conservatory</h3>
+              <p style="color: var(--muted); line-height: 1.7;">Navigate flooded recital halls where songs move bridges, bosses alter acoustics, and the city’s history is preserved in playable echoes.</p>
+            </div>
+            <div class="lore-block">
+              <h3>Act III — Crown of Cinders</h3>
+              <p style="color: var(--muted); line-height: 1.7;">Ascend the inverted palace through civil-war ghosts, unlock aerial traversal, and choose whether to reignite or extinguish the realm.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Signature Features</h2>
+          <ul>
+            <li>Bosses evolve visually as their armor breaks, exposing luminous inner anatomy and changing move sets.</li>
+            <li>Optional relics reshape traversal, enabling speedrunner routes and deeply hidden lore chambers.</li>
+            <li>Quiet NPC hubs contrast against oppressive combat arenas to keep the emotional rhythm memorable.</li>
+            <li>A hand-authored score would pivot between cathedral ambience, intimate strings, and colossal percussion.</li>
+          </ul>
+          <p class="footer-note">
+            This prototype intentionally abandons the previous direction and now presents a fresh IP pitch with its own art language, mechanics,
+            story, and tone. It is meant to communicate “premium metroidvania ambition” while remaining fully original.
+          </p>
+        </section>
+      </aside>
     </section>
   </main>
 
@@ -338,106 +521,219 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
+    const keys = new Set();
+    const gravity = 0.6;
+    const floorY = 430;
+    const platforms = [
+      { x: 110, y: 332, w: 170, h: 18 },
+      { x: 355, y: 270, w: 135, h: 16 },
+      { x: 620, y: 317, w: 158, h: 16 }
+    ];
+
     const state = {
-      phase: 'intro',
-      player: { x: 180, y: 285, w: 18, h: 18, vx: 0, vy: 0, hp: 24, maxHp: 24, grounded: false, invuln: 0 },
-      flowey: { mercy: 0, mood: 'smile' },
-      bullets: [],
-      petals: [],
       frame: 0,
+      phase: 'phase1',
       attackTimer: 0,
       currentAttack: 0,
-      message: '* Flowey pops out of the golden flowers.\n* “Howdy! You\'re new here, aren\'tcha?”',
-      actionCooldown: 0,
-      platforms: [
-        { x: 70, y: 330, w: 170, h: 12 },
-        { x: 290, y: 250, w: 120, h: 12 },
-        { x: 470, y: 305, w: 130, h: 12 },
-        { x: 645, y: 220, w: 110, h: 12 }
-      ]
+      particles: [],
+      bullets: [],
+      shockwaves: [],
+      slashArcs: [],
+      message: 'The lantern stirs.\nThe Glass Warden rises from its shrine, reflecting a dead kingdom in fractured light.',
+      player: {},
+      boss: {}
     };
 
-    const keys = new Set();
-    const gravity = 0.45;
-    const groundY = 360;
+    function resetGame() {
+      state.frame = 0;
+      state.phase = 'phase1';
+      state.attackTimer = 0;
+      state.currentAttack = 0;
+      state.particles = [];
+      state.bullets = [];
+      state.shockwaves = [];
+      state.slashArcs = [];
+      state.message = 'The lantern stirs.\nThe Glass Warden rises from its shrine, reflecting a dead kingdom in fractured light.';
+      state.player = {
+        x: 180,
+        y: floorY - 46,
+        w: 26,
+        h: 46,
+        vx: 0,
+        vy: 0,
+        facing: 1,
+        hp: 9,
+        maxHp: 9,
+        focus: 100,
+        maxFocus: 100,
+        grounded: false,
+        invuln: 0,
+        dashTimer: 0,
+        attackTimer: 0,
+        healTimer: 0,
+        coyote: 0
+      };
+      state.boss = {
+        x: 720,
+        y: 214,
+        hp: 320,
+        maxHp: 320,
+        exposed: false,
+        flash: 0,
+        mood: 'watching'
+      };
+      updateHud();
+      logMessage(state.message);
+    }
 
     function logMessage(text) {
       state.message = text;
       document.getElementById('battleLog').textContent = text;
     }
 
-    function updateBars() {
-      const hpPct = Math.max(0, state.player.hp / state.player.maxHp) * 100;
-      const mercyPct = Math.min(100, state.flowey.mercy);
-      document.getElementById('playerHpText').textContent = `HP ${state.player.hp} / ${state.player.maxHp}`;
-      document.getElementById('playerHpBar').style.width = `${hpPct}%`;
-      document.getElementById('floweyMercyText').textContent = `Mercy ${state.flowey.mercy} / 100`;
-      document.getElementById('floweyMercyBar').style.width = `${mercyPct}%`;
+    function updateHud() {
+      const player = state.player;
+      const boss = state.boss;
+      document.getElementById('hpText').textContent = `Vitality ${player.hp} / ${player.maxHp}`;
+      document.getElementById('focusText').textContent = `Focus ${Math.round(player.focus)} / ${player.maxFocus}`;
+      document.getElementById('bossText').textContent = boss.hp > 0 ? `Warden Shell ${Math.max(0, Math.round((boss.hp / boss.maxHp) * 100))}%` : 'Warden Broken';
+      document.getElementById('eventText').textContent = state.phase === 'phase2' ? 'Choir Heart Exposed' : state.phase === 'won' ? 'Sanctum Cleansed' : 'Phase One';
+      document.getElementById('hpBar').style.width = `${(player.hp / player.maxHp) * 100}%`;
+      document.getElementById('focusBar').style.width = `${(player.focus / player.maxFocus) * 100}%`;
+      document.getElementById('bossBar').style.width = `${Math.max(0, (boss.hp / boss.maxHp) * 100)}%`;
+      document.getElementById('eventBar').style.width = `${state.phase === 'phase2' ? 72 : state.phase === 'won' ? 100 : 36}%`;
     }
 
-    function spawnPetals() {
-      if (state.frame % 18 === 0) {
-        state.petals.push({
-          x: Math.random() * canvas.width,
-          y: -10,
-          size: 4 + Math.random() * 6,
-          speed: 0.6 + Math.random() * 1.6,
-          drift: (Math.random() - 0.5) * 0.7
+    function emitParticles(x, y, count, palette) {
+      for (let i = 0; i < count; i++) {
+        state.particles.push({
+          x,
+          y,
+          vx: (Math.random() - 0.5) * 4.5,
+          vy: (Math.random() - 0.5) * 4.5 - 1,
+          life: 30 + Math.random() * 28,
+          size: 1 + Math.random() * 3.5,
+          color: palette[Math.floor(Math.random() * palette.length)]
         });
       }
     }
 
+    function doSlash() {
+      const player = state.player;
+      if (player.attackTimer > 0 || player.healTimer > 0 || state.phase === 'lost' || state.phase === 'won') return;
+      player.attackTimer = 16;
+      state.slashArcs.push({
+        x: player.x + player.w / 2 + player.facing * 26,
+        y: player.y + 20,
+        facing: player.facing,
+        life: 10
+      });
+      emitParticles(player.x + player.w / 2 + player.facing * 18, player.y + 20, 12, ['#edf2ff', '#89a7ff', '#67e8f9']);
+      const bossHitX = player.x + player.w / 2 + player.facing * 62;
+      if (Math.abs(bossHitX - state.boss.x) < 82 && Math.abs((player.y + 18) - state.boss.y) < 90) {
+        const damage = state.phase === 'phase2' ? 22 : 14;
+        state.boss.hp = Math.max(0, state.boss.hp - damage);
+        state.boss.flash = 8;
+        emitParticles(state.boss.x, state.boss.y, 24, state.phase === 'phase2' ? ['#ff7a59', '#ffd166', '#fff1c1'] : ['#9fb0ff', '#67e8f9', '#ffffff']);
+        if (state.boss.hp <= state.boss.maxHp / 2 && state.phase === 'phase1') {
+          state.phase = 'phase2';
+          state.boss.exposed = true;
+          logMessage('The shell fractures.\nA living choir-heart shines through the Warden, and the arena turns violent.');
+        } else if (state.boss.hp <= 0) {
+          state.phase = 'won';
+          state.bullets = [];
+          state.shockwaves = [];
+          logMessage('The Glass Warden kneels.\nThe lantern absorbs the final hymn, and a path deeper into Emberhollow opens.');
+        } else {
+          logMessage(state.phase === 'phase2'
+            ? 'Your blade cuts into the exposed choir-heart. Light spills across the sanctum.'
+            : 'The lantern blade scores the crystal shell, throwing shards like frozen rain.');
+        }
+        updateHud();
+      } else {
+        logMessage('Your slash hums through the dark, carving a brief crescent of blue-white fire.');
+      }
+    }
+
+    function doDash() {
+      const player = state.player;
+      if (player.dashTimer > 0 || player.focus < 22 || state.phase === 'lost' || state.phase === 'won') return;
+      player.focus -= 22;
+      player.dashTimer = 12;
+      player.invuln = Math.max(player.invuln, 12);
+      player.vx = player.facing * 9.5;
+      emitParticles(player.x + player.w / 2, player.y + player.h / 2, 20, ['#67e8f9', '#89a7ff', '#edf2ff']);
+      logMessage('You burst sideways in a comet trail, outrunning the next strike.');
+      updateHud();
+    }
+
+    function doHeal() {
+      const player = state.player;
+      if (player.healTimer > 0 || player.focus < 35 || player.hp >= player.maxHp || state.phase === 'lost' || state.phase === 'won') return;
+      player.focus -= 35;
+      player.healTimer = 44;
+      player.vx *= 0.35;
+      logMessage('You kneel and sing into the lantern. Hold still long enough and the ember answers.');
+      updateHud();
+    }
+
     function spawnAttackPattern() {
-      const attacks = [spawnVineRing, spawnRain, spawnLanceSweep];
+      const attacks = state.phase === 'phase2'
+        ? [spawnLanceFan, spawnBeamSweep, spawnSlam]
+        : [spawnLanceFan, spawnRain, spawnSlam];
       attacks[state.currentAttack % attacks.length]();
       state.currentAttack += 1;
       state.attackTimer = 0;
     }
 
-    function spawnVineRing() {
-      for (let i = 0; i < 10; i++) {
-        const angle = (Math.PI * 2 * i) / 10;
-        state.bullets.push({
-          type: 'vine',
-          x: 410,
-          y: 160,
-          vx: Math.cos(angle) * 1.9,
-          vy: Math.sin(angle) * 1.9,
-          r: 11,
-          life: 240
-        });
-      }
-      logMessage('* Flowey\'s friendliness curls into a ring of thorns.');
-    }
-
-    function spawnRain() {
-      for (let i = 0; i < 14; i++) {
-        state.bullets.push({
-          type: 'drop',
-          x: 40 + i * 52,
-          y: -20 - Math.random() * 140,
-          vx: 0,
-          vy: 2.3 + Math.random() * 1.2,
-          r: 9,
-          life: 260
-        });
-      }
-      logMessage('* Blue pellets fall like cold rain. Stay moving.');
-    }
-
-    function spawnLanceSweep() {
+    function spawnLanceFan() {
       for (let i = 0; i < 7; i++) {
         state.bullets.push({
           type: 'lance',
-          x: canvas.width + i * 90,
-          y: 85 + i * 40,
-          vx: -3.2,
-          vy: 0,
-          r: 15,
-          life: 320
+          x: state.boss.x - 40,
+          y: state.boss.y - 10 + i * 18,
+          vx: -3.6 - i * 0.15,
+          vy: -1.4 + i * 0.45,
+          life: 220,
+          r: 14
         });
       }
-      logMessage('* A disciplined spear line cuts across the box.');
+      logMessage('The Warden opens like a cathedral gate and releases a fan of crystal lances.');
+    }
+
+    function spawnRain() {
+      for (let i = 0; i < 11; i++) {
+        state.bullets.push({
+          type: 'rain',
+          x: 110 + i * 70,
+          y: -30 - Math.random() * 120,
+          vx: Math.sin(i) * 0.4,
+          vy: 3.6 + Math.random() * 0.8,
+          life: 210,
+          r: 11
+        });
+      }
+      logMessage('Shard rain falls from the vault. Safe space is earned, never given.');
+    }
+
+    function spawnBeamSweep() {
+      state.bullets.push({
+        type: 'beam',
+        x: state.boss.x - 180,
+        y: 170 + Math.random() * 165,
+        vx: -6.8,
+        vy: 0,
+        life: 44,
+        r: 30
+      });
+      logMessage('The exposed heart emits a cutting beam. Dash through the timing window or climb above it.');
+    }
+
+    function spawnSlam() {
+      state.shockwaves.push({ x: state.boss.x - 30, y: floorY + 4, r: 26, speed: 6.8, life: 110 });
+      state.shockwaves.push({ x: state.boss.x - 30, y: floorY + 4, r: 26, speed: -6.8, life: 110 });
+      emitParticles(state.boss.x - 18, floorY, 32, ['#ffd166', '#ff7a59', '#ffffff']);
+      logMessage('The shrine floor erupts as the Warden slams downward, sending shockwaves through the nave.');
     }
 
     function rectsOverlap(a, b) {
@@ -450,291 +746,402 @@
       const right = keys.has('ArrowRight') || keys.has('d');
       const jump = keys.has('ArrowUp') || keys.has('w') || keys.has(' ');
 
-      if (left) p.vx = Math.max(p.vx - 0.55, -4.2);
-      if (right) p.vx = Math.min(p.vx + 0.55, 4.2);
-      if (!left && !right) p.vx *= 0.8;
-      if (jump && p.grounded) {
-        p.vy = -8.6;
-        p.grounded = false;
+      if (state.phase === 'lost' || state.phase === 'won') return;
+
+      if (p.healTimer > 0) {
+        p.healTimer -= 1;
+        p.vx *= 0.82;
+        if (p.healTimer === 1) {
+          p.hp = Math.min(p.maxHp, p.hp + 3);
+          emitParticles(p.x + p.w / 2, p.y, 28, ['#7ef0c2', '#67e8f9', '#ffffff']);
+          logMessage('The Ember Song completes. Your lantern burns warmer.');
+          updateHud();
+        }
+      } else if (p.dashTimer > 0) {
+        p.dashTimer -= 1;
+      } else {
+        if (left) {
+          p.vx = Math.max(p.vx - 0.75, -4.5);
+          p.facing = -1;
+        }
+        if (right) {
+          p.vx = Math.min(p.vx + 0.75, 4.5);
+          p.facing = 1;
+        }
+        if (!left && !right) p.vx *= 0.8;
       }
 
-      p.vy += gravity;
+      if ((p.grounded || p.coyote > 0) && jump && !keys.has('__jumpLock')) {
+        p.vy = -11.3;
+        p.grounded = false;
+        p.coyote = 0;
+        keys.add('__jumpLock');
+        emitParticles(p.x + p.w / 2, p.y + p.h, 10, ['#89a7ff', '#edf2ff']);
+      }
+      if (!jump) keys.delete('__jumpLock');
+
+      if (p.dashTimer <= 0) p.vy += gravity;
       p.x += p.vx;
       p.y += p.vy;
       p.grounded = false;
 
-      if (p.y + p.h >= groundY) {
-        p.y = groundY - p.h;
+      if (p.y + p.h >= floorY) {
+        p.y = floorY - p.h;
         p.vy = 0;
         p.grounded = true;
       }
 
-      for (const platform of state.platforms) {
-        const platformRect = { x: platform.x, y: platform.y, w: platform.w, h: platform.h };
-        const playerRect = { x: p.x, y: p.y, w: p.w, h: p.h };
-        if (rectsOverlap(playerRect, platformRect) && p.vy >= 0 && p.y + p.h - p.vy <= platform.y + 6) {
+      for (const platform of platforms) {
+        const prevBottom = p.y + p.h - p.vy;
+        if (rectsOverlap({ x: p.x, y: p.y, w: p.w, h: p.h }, platform) && p.vy >= 0 && prevBottom <= platform.y + 12) {
           p.y = platform.y - p.h;
           p.vy = 0;
           p.grounded = true;
         }
       }
 
-      p.x = Math.max(8, Math.min(canvas.width - p.w - 8, p.x));
+      p.coyote = p.grounded ? 8 : Math.max(0, p.coyote - 1);
+      p.x = Math.max(30, Math.min(canvas.width - p.w - 30, p.x));
       if (p.invuln > 0) p.invuln -= 1;
+      if (p.attackTimer > 0) p.attackTimer -= 1;
+      p.focus = Math.min(p.maxFocus, p.focus + 0.08);
     }
 
-    function handleBullets() {
+    function damagePlayer(amount, reason) {
       const p = state.player;
-      for (const bullet of state.bullets) {
+      if (p.invuln > 0 || state.phase === 'lost' || state.phase === 'won') return;
+      p.hp = Math.max(0, p.hp - amount);
+      p.invuln = 48;
+      p.healTimer = 0;
+      emitParticles(p.x + p.w / 2, p.y + p.h / 2, 26, ['#ff7b83', '#ff9770', '#ffffff']);
+      logMessage(reason);
+      updateHud();
+      if (p.hp <= 0) {
+        state.phase = 'lost';
+        logMessage('The lantern goes dark.\nPress R or use Reset to challenge the Glass Warden again.');
+      }
+    }
+
+    function handleProjectiles() {
+      const p = state.player;
+      state.bullets.forEach((bullet) => {
         bullet.x += bullet.vx;
         bullet.y += bullet.vy;
         bullet.life -= 1;
-      }
-      state.bullets = state.bullets.filter(b => b.life > 0 && b.x > -40 && b.x < canvas.width + 40 && b.y > -60 && b.y < canvas.height + 60);
+      });
+      state.bullets = state.bullets.filter((bullet) => bullet.life > 0 && bullet.x > -120 && bullet.x < canvas.width + 120 && bullet.y > -120 && bullet.y < canvas.height + 120);
 
       for (const bullet of state.bullets) {
-        const dx = (p.x + p.w / 2) - bullet.x;
-        const dy = (p.y + p.h / 2) - bullet.y;
-        const hitDist = bullet.r + p.w * 0.55;
-        if (dx * dx + dy * dy < hitDist * hitDist && p.invuln <= 0 && state.phase !== 'won' && state.phase !== 'lost') {
-          p.hp = Math.max(0, p.hp - 2);
-          p.invuln = 50;
-          state.flowey.mood = 'wicked';
-          logMessage('* Flowey laughs as the petals bite.\n* “See? In this world...”');
-          updateBars();
-          if (p.hp <= 0) {
-            state.phase = 'lost';
-            logMessage('* Your SOUL cracks under the pressure.\n* Refresh to try the Integrity route again.');
-          }
+        const dx = p.x + p.w / 2 - bullet.x;
+        const dy = p.y + p.h / 2 - bullet.y;
+        const radius = bullet.type === 'beam' ? 42 : bullet.r + 10;
+        if (dx * dx + dy * dy < radius * radius) {
+          damagePlayer(bullet.type === 'beam' ? 2 : 1, bullet.type === 'beam'
+            ? 'The choir-beam burns through your guard and fills the arena with white noise.'
+            : 'Crystal edges graze your cloak, stealing heat from the lantern.');
+          break;
+        }
+      }
+
+      state.shockwaves.forEach((wave) => {
+        wave.x += wave.speed;
+        wave.life -= 1;
+      });
+      state.shockwaves = state.shockwaves.filter((wave) => wave.life > 0 && wave.x > -80 && wave.x < canvas.width + 80);
+
+      for (const wave of state.shockwaves) {
+        if (Math.abs((p.x + p.w / 2) - wave.x) < wave.r + 12 && p.y + p.h > floorY - 18) {
+          damagePlayer(1, 'The floor shockwave catches your footing and rattles the lantern bones.');
           break;
         }
       }
     }
 
-    function drawHeart(x, y, size, color) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.moveTo(0, size * 0.3);
-      ctx.bezierCurveTo(0, -size * 0.2, -size, -size * 0.2, -size, size * 0.35);
-      ctx.bezierCurveTo(-size, size * 0.8, -size * 0.3, size * 1.1, 0, size * 1.4);
-      ctx.bezierCurveTo(size * 0.3, size * 1.1, size, size * 0.8, size, size * 0.35);
-      ctx.bezierCurveTo(size, -size * 0.2, 0, -size * 0.2, 0, size * 0.3);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function drawFlowey() {
-      const cx = 410;
-      const cy = 98;
-      const sway = Math.sin(state.frame / 16) * 4;
-      const mood = state.flowey.mood;
-
-      for (let i = 0; i < 8; i++) {
-        const angle = (Math.PI * 2 * i) / 8 + state.frame * 0.01;
-        const px = cx + Math.cos(angle) * 42;
-        const py = cy + Math.sin(angle) * 42 + sway;
-        ctx.fillStyle = '#facc15';
-        ctx.beginPath();
-        ctx.ellipse(px, py, 16, 26, angle, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      ctx.fillStyle = '#22c55e';
-      ctx.fillRect(cx - 4, cy + 28, 8, 65);
-      ctx.fillRect(cx - 36, cy + 66 + sway, 72, 6);
-      ctx.fillStyle = '#f8fafc';
-      ctx.beginPath();
-      ctx.arc(cx, cy + sway, 33, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#111827';
-      ctx.beginPath();
-      ctx.arc(cx - 12, cy - 6 + sway, 4.5, 0, Math.PI * 2);
-      ctx.arc(cx + 12, cy - 6 + sway, 4.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.strokeStyle = '#111827';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      if (mood === 'wicked') {
-        ctx.arc(cx, cy + 10 + sway, 14, 0.15, Math.PI - 0.15, false);
-      } else if (state.phase === 'won') {
-        ctx.arc(cx, cy + 12 + sway, 13, 0.15, Math.PI - 0.15, true);
-      } else {
-        ctx.arc(cx, cy + 14 + sway, 14, 0.2, Math.PI - 0.2);
-      }
-      ctx.stroke();
+    function updateParticles() {
+      state.particles.forEach((particle) => {
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.vy += 0.05;
+        particle.life -= 1;
+      });
+      state.particles = state.particles.filter((particle) => particle.life > 0);
+      state.slashArcs.forEach((arc) => { arc.life -= 1; });
+      state.slashArcs = state.slashArcs.filter((arc) => arc.life > 0);
+      if (state.boss.flash > 0) state.boss.flash -= 1;
     }
 
     function drawBackground() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      grad.addColorStop(0, '#0f172a');
-      grad.addColorStop(1, '#020617');
-      ctx.fillStyle = grad;
+      const sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      sky.addColorStop(0, '#0c1123');
+      sky.addColorStop(0.55, '#080c18');
+      sky.addColorStop(1, '#04050d');
+      ctx.fillStyle = sky;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      spawnPetals();
-      state.petals.forEach((petal) => {
-        petal.y += petal.speed;
-        petal.x += petal.drift;
-      });
-      state.petals = state.petals.filter((petal) => petal.y < canvas.height + 20);
-      for (const petal of state.petals) {
-        ctx.fillStyle = 'rgba(250, 204, 21, 0.75)';
+      for (let layer = 0; layer < 4; layer++) {
+        const offset = state.frame * (0.08 + layer * 0.05);
+        ctx.fillStyle = [`rgba(18,22,38,0.85)`, `rgba(14,18,34,0.8)`, `rgba(10,13,25,0.86)`, `rgba(6,8,18,0.95)`][layer];
         ctx.beginPath();
-        ctx.ellipse(petal.x, petal.y, petal.size * 0.6, petal.size, Math.PI / 4, 0, Math.PI * 2);
+        ctx.moveTo(0, 270 + layer * 30);
+        for (let x = 0; x <= canvas.width; x += 80) {
+          const height = 40 + Math.sin((x + offset) * 0.01 + layer) * (18 + layer * 8);
+          ctx.lineTo(x, 250 + layer * 34 + height);
+        }
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.lineTo(0, canvas.height);
+        ctx.closePath();
         ctx.fill();
       }
 
-      ctx.fillStyle = '#14532d';
-      ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
-      for (const platform of state.platforms) {
-        ctx.fillStyle = '#cbd5e1';
+      const glow = ctx.createRadialGradient(680, 130, 20, 680, 130, 220);
+      glow.addColorStop(0, 'rgba(255, 209, 102, 0.26)');
+      glow.addColorStop(0.3, 'rgba(137, 167, 255, 0.12)');
+      glow.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#161d33';
+      ctx.fillRect(0, floorY, canvas.width, canvas.height - floorY);
+      ctx.fillStyle = '#1d2540';
+      platforms.forEach((platform) => {
         ctx.fillRect(platform.x, platform.y, platform.w, platform.h);
+        ctx.fillStyle = 'rgba(255,255,255,0.08)';
+        ctx.fillRect(platform.x, platform.y, platform.w, 3);
+        ctx.fillStyle = '#1d2540';
+      });
+
+      for (let i = 0; i < 12; i++) {
+        const x = (i * 90 + state.frame * 0.25) % (canvas.width + 120) - 60;
+        const y = 50 + (i % 4) * 70;
+        ctx.fillStyle = 'rgba(255,255,255,0.05)';
+        ctx.beginPath();
+        ctx.arc(x, y, 1.5 + (i % 3), 0, Math.PI * 2);
+        ctx.fill();
       }
     }
 
-    function drawBullets() {
-      for (const bullet of state.bullets) {
-        if (bullet.type === 'vine') {
-          ctx.fillStyle = '#4ade80';
-          ctx.beginPath();
-          ctx.arc(bullet.x, bullet.y, bullet.r, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.strokeStyle = '#166534';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(bullet.x - bullet.r, bullet.y);
-          ctx.lineTo(bullet.x + bullet.r, bullet.y);
-          ctx.stroke();
-        } else if (bullet.type === 'drop') {
-          ctx.fillStyle = '#38bdf8';
-          ctx.beginPath();
-          ctx.moveTo(bullet.x, bullet.y - bullet.r);
-          ctx.lineTo(bullet.x + bullet.r * 0.7, bullet.y + bullet.r);
-          ctx.lineTo(bullet.x - bullet.r * 0.7, bullet.y + bullet.r);
-          ctx.closePath();
-          ctx.fill();
-        } else {
-          ctx.fillStyle = '#e2e8f0';
-          ctx.fillRect(bullet.x - bullet.r, bullet.y - 4, bullet.r * 2.6, 8);
-          ctx.fillStyle = '#93c5fd';
-          ctx.beginPath();
-          ctx.moveTo(bullet.x + bullet.r * 1.6, bullet.y);
-          ctx.lineTo(bullet.x + bullet.r * 0.8, bullet.y - 10);
-          ctx.lineTo(bullet.x + bullet.r * 0.8, bullet.y + 10);
-          ctx.closePath();
-          ctx.fill();
-        }
+    function drawBoss() {
+      const boss = state.boss;
+      const bob = Math.sin(state.frame * 0.04) * 7;
+      const x = boss.x;
+      const y = boss.y + bob;
+
+      ctx.save();
+      ctx.translate(x, y);
+
+      ctx.fillStyle = 'rgba(103,232,249,0.1)';
+      ctx.beginPath();
+      ctx.ellipse(0, 82, 64, 18, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI * 2 * i) / 6 + state.frame * 0.005;
+        ctx.strokeStyle = boss.exposed ? 'rgba(255, 209, 102, 0.35)' : 'rgba(137, 167, 255, 0.32)';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(angle) * 26, Math.sin(angle) * 24 - 12);
+        ctx.lineTo(Math.cos(angle) * 50, Math.sin(angle) * 46 + 14);
+        ctx.stroke();
       }
+
+      ctx.fillStyle = boss.flash > 0 ? '#ffffff' : boss.exposed ? '#322114' : '#dde7ff';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 50, 64, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      const core = ctx.createRadialGradient(0, -8, 3, 0, -8, 28);
+      core.addColorStop(0, boss.exposed ? 'rgba(255,245,200,1)' : 'rgba(255,255,255,0.95)');
+      core.addColorStop(0.55, boss.exposed ? 'rgba(255,122,89,0.95)' : 'rgba(137,167,255,0.82)');
+      core.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = core;
+      ctx.beginPath();
+      ctx.arc(0, -8, 30, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = boss.exposed ? '#fff3d1' : '#11172a';
+      ctx.beginPath();
+      ctx.arc(-14, -10, 6, 0, Math.PI * 2);
+      ctx.arc(14, -10, 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = boss.exposed ? '#fff0c2' : '#11172a';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(0, 10, 18, 0.1, Math.PI - 0.1, boss.exposed);
+      ctx.stroke();
+      ctx.restore();
     }
 
     function drawPlayer() {
       const p = state.player;
-      if (p.invuln > 0 && Math.floor(p.invuln / 5) % 2 === 0) return;
-      drawHeart(p.x + p.w / 2, p.y + p.h / 2 - 4, 8, '#60a5fa');
-      if (p.grounded) {
-        ctx.strokeStyle = 'rgba(191, 219, 254, 0.35)';
-        ctx.beginPath();
-        ctx.arc(p.x + p.w / 2, p.y + p.h + 5, 10, 0, Math.PI);
-        ctx.stroke();
-      }
+      if (p.invuln > 0 && Math.floor(p.invuln / 4) % 2 === 0) return;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+
+      ctx.fillStyle = 'rgba(103,232,249,0.14)';
+      ctx.beginPath();
+      ctx.ellipse(p.w / 2, p.h + 8, 15, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#f2f6ff';
+      ctx.beginPath();
+      ctx.moveTo(13, 0);
+      ctx.lineTo(24, 10);
+      ctx.lineTo(21, 36);
+      ctx.lineTo(13, 46);
+      ctx.lineTo(5, 36);
+      ctx.lineTo(2, 10);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#10182b';
+      ctx.beginPath();
+      ctx.arc(9, 16, 3.2, 0, Math.PI * 2);
+      ctx.arc(17, 16, 3.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = '#89a7ff';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(13, 19);
+      ctx.lineTo(13 + p.facing * 22, 24);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#67e8f9';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(13, 19);
+      ctx.lineTo(13 + p.facing * 16, 14);
+      ctx.stroke();
+      ctx.restore();
     }
 
-    function updateBattle() {
+    function drawProjectiles() {
+      state.bullets.forEach((bullet) => {
+        if (bullet.type === 'lance') {
+          ctx.save();
+          ctx.translate(bullet.x, bullet.y);
+          ctx.rotate(Math.atan2(bullet.vy, bullet.vx));
+          ctx.fillStyle = '#dce7ff';
+          ctx.fillRect(-bullet.r, -4, bullet.r * 2.1, 8);
+          ctx.beginPath();
+          ctx.moveTo(bullet.r * 1.05, 0);
+          ctx.lineTo(bullet.r * 0.45, -10);
+          ctx.lineTo(bullet.r * 0.45, 10);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        } else if (bullet.type === 'beam') {
+          const beam = ctx.createLinearGradient(bullet.x - 160, bullet.y, bullet.x + 24, bullet.y);
+          beam.addColorStop(0, 'rgba(255,255,255,0)');
+          beam.addColorStop(0.35, 'rgba(255,241,193,0.35)');
+          beam.addColorStop(1, 'rgba(255,122,89,0.95)');
+          ctx.fillStyle = beam;
+          ctx.fillRect(bullet.x - 180, bullet.y - 16, 210, 32);
+        } else {
+          ctx.fillStyle = '#89a7ff';
+          ctx.beginPath();
+          ctx.moveTo(bullet.x, bullet.y - bullet.r);
+          ctx.lineTo(bullet.x + bullet.r * 0.75, bullet.y + bullet.r);
+          ctx.lineTo(bullet.x - bullet.r * 0.75, bullet.y + bullet.r);
+          ctx.closePath();
+          ctx.fill();
+        }
+      });
+
+      state.shockwaves.forEach((wave) => {
+        ctx.strokeStyle = 'rgba(255, 209, 102, 0.85)';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(wave.x, wave.y, wave.r, Math.PI, 0);
+        ctx.stroke();
+      });
+
+      state.slashArcs.forEach((arc) => {
+        ctx.strokeStyle = `rgba(237,242,255,${arc.life / 10})`;
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.arc(arc.x, arc.y, 28, arc.facing === 1 ? -0.8 : Math.PI - 0.8, arc.facing === 1 ? 0.8 : Math.PI + 0.8);
+        ctx.stroke();
+      });
+
+      state.particles.forEach((particle) => {
+        ctx.fillStyle = particle.color;
+        ctx.globalAlpha = Math.max(0, particle.life / 40);
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      });
+    }
+
+    function update() {
       state.frame += 1;
-      if (state.phase === 'intro' && state.frame > 90) state.phase = 'battle';
-      if (state.phase === 'battle') {
+      if (state.phase !== 'lost' && state.phase !== 'won') {
         handlePlayer();
-        handleBullets();
+        handleProjectiles();
+        updateParticles();
         state.attackTimer += 1;
-        if (state.attackTimer > 120) spawnAttackPattern();
+        if (state.attackTimer > (state.phase === 'phase2' ? 78 : 112)) spawnAttackPattern();
+      } else {
+        updateParticles();
       }
+      updateHud();
+    }
 
-      if (state.actionCooldown > 0) state.actionCooldown -= 1;
-
+    function draw() {
       drawBackground();
-      drawFlowey();
-      drawBullets();
+      drawBoss();
+      drawProjectiles();
       drawPlayer();
 
       ctx.fillStyle = 'rgba(255,255,255,0.08)';
-      ctx.font = '16px Trebuchet MS';
-      ctx.fillText('Blue SOUL Mode • Integrity survives by timing and honesty', 18, 28);
+      ctx.font = '17px Inter, sans-serif';
+      ctx.fillText('EMBERHOLLOW • Shrine of the Glass Warden', 24, 34);
 
-      if (state.phase === 'won') {
-        ctx.fillStyle = 'rgba(15,23,42,0.82)';
-        ctx.fillRect(110, 135, 600, 110);
-        ctx.strokeStyle = '#fde047';
+      if (state.phase === 'won' || state.phase === 'lost') {
+        ctx.fillStyle = 'rgba(6, 8, 18, 0.78)';
+        ctx.fillRect(180, 170, 600, 130);
+        ctx.strokeStyle = state.phase === 'won' ? '#7ef0c2' : '#ff7b83';
         ctx.lineWidth = 3;
-        ctx.strokeRect(110, 135, 600, 110);
-        ctx.fillStyle = '#f8fafc';
-        ctx.font = '28px Trebuchet MS';
-        ctx.fillText('Integrity Route Unlocked', 250, 180);
-        ctx.font = '18px Trebuchet MS';
-        ctx.fillText('You spared Flowey after seeing through the act.', 205, 214);
-      }
-
-      if (state.phase !== 'lost') requestAnimationFrame(updateBattle);
-    }
-
-    function gainMercy(amount, message) {
-      if (state.phase === 'lost') return;
-      state.flowey.mercy = Math.min(100, state.flowey.mercy + amount);
-      state.flowey.mood = state.flowey.mercy >= 70 ? 'wicked' : 'smile';
-      updateBars();
-      logMessage(message);
-      if (state.flowey.mercy >= 100) {
-        state.phase = 'won';
-        state.bullets = [];
-        state.flowey.mood = 'smile';
-        logMessage('* Flowey freezes when you refuse to play his game.\n* Mercy turns the trap into a confession.');
+        ctx.strokeRect(180, 170, 600, 130);
+        ctx.fillStyle = '#edf2ff';
+        ctx.font = '34px Inter, sans-serif';
+        ctx.fillText(state.phase === 'won' ? 'Sanctum Cleansed' : 'Lantern Fallen', 360, 220);
+        ctx.font = '18px Inter, sans-serif';
+        ctx.fillText(state.phase === 'won' ? 'A deeper kingdom awaits beyond the shattered shrine.' : 'Reset the demo and challenge the Warden again.', 282, 255);
       }
     }
 
-    document.getElementById('fightBtn').addEventListener('click', () => {
-      if (state.actionCooldown > 0 || state.phase === 'won' || state.phase === 'lost') return;
-      state.actionCooldown = 25;
-      state.flowey.mood = 'wicked';
-      state.bullets.push({ type: 'vine', x: 410, y: 120, vx: 0, vy: 2.4, r: 18, life: 120 });
-      logMessage('* You lash out, but Flowey only grins wider.\n* Violence makes the room smaller.');
-    });
-
-    document.getElementById('actBtn').addEventListener('click', () => {
-      if (state.actionCooldown > 0 || state.phase === 'won' || state.phase === 'lost') return;
-      state.actionCooldown = 25;
-      gainMercy(28, '* You tell the truth: you know Flowey is lying.\n* For a second, his smile twitches.');
-    });
-
-    document.getElementById('itemBtn').addEventListener('click', () => {
-      if (state.actionCooldown > 0 || state.phase === 'won' || state.phase === 'lost') return;
-      state.actionCooldown = 25;
-      state.player.hp = Math.min(state.player.maxHp, state.player.hp + 6);
-      updateBars();
-      logMessage('* You eat a Snowman Piece substitute.\n* The steady taste reminds you who you are.');
-    });
-
-    document.getElementById('mercyBtn').addEventListener('click', () => {
-      if (state.actionCooldown > 0 || state.phase === 'won' || state.phase === 'lost') return;
-      state.actionCooldown = 25;
-      gainMercy(38, '* You offer mercy before Flowey deserves it.\n* Integrity means doing right without applause.');
-    });
+    function loop() {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
 
     window.addEventListener('keydown', (event) => {
       const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
       keys.add(key);
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(event.key)) event.preventDefault();
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Shift'].includes(event.key)) event.preventDefault();
+      if (key === 'j') doSlash();
+      if (event.key === 'Shift') doDash();
+      if (key === 'k') doHeal();
+      if (key === 'r') resetGame();
     });
 
     window.addEventListener('keyup', (event) => {
       const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
       keys.delete(key);
+      if (event.key === 'Shift') keys.delete('Shift');
     });
 
-    updateBars();
-    updateBattle();
+    document.getElementById('slashBtn').addEventListener('click', doSlash);
+    document.getElementById('dashBtn').addEventListener('click', doDash);
+    document.getElementById('healBtn').addEventListener('click', doHeal);
+    document.getElementById('resetBtn').addEventListener('click', resetGame);
+
+    resetGame();
+    loop();
   </script>
 </body>
 </html>
