@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UNDERTALE BLUE // INTEGRITY</title>
+  <style>
+    :root {
+      --bg: #000000;
+      --fg: #ffffff;
+      --blue: #4aa8ff;
+      --blue-deep: #1664c4;
+      --yellow: #ffd84d;
+      --orange: #ff9a1f;
+      --red: #ff4141;
+      --green: #15d644;
+      --gray: #7f7f7f;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .game-shell {
+      width: min(1100px, 100%);
+      display: grid;
+      gap: 16px;
+    }
+
+    .title-card,
+    .lore-panel,
+    .battle-panel {
+      border: 4px solid var(--fg);
+      background: #000;
+    }
+
+    .title-card {
+      padding: 18px 20px;
+      text-transform: uppercase;
+      box-shadow: 0 0 0 4px #000, 0 0 0 8px var(--blue-deep);
+    }
+
+    .title-card h1 {
+      margin: 0;
+      font-size: clamp(28px, 5vw, 54px);
+      line-height: 1;
+      letter-spacing: 2px;
+      color: var(--blue);
+      text-shadow: 4px 4px 0 #08315e;
+    }
+
+    .title-card p {
+      margin: 10px 0 0;
+      max-width: 78ch;
+      line-height: 1.45;
+      color: #d7eaff;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(290px, 0.8fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .battle-panel {
+      padding: 18px;
+    }
+
+    .arena-frame {
+      background: #000;
+      border: 4px solid var(--fg);
+      padding: 14px;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #000;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      aspect-ratio: 4 / 3;
+    }
+
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      margin: 12px 0 10px;
+      font-size: 18px;
+    }
+
+    .hp-wrap,
+    .enemy-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .meter {
+      width: 180px;
+      height: 18px;
+      border: 2px solid var(--fg);
+      background: #2b2b2b;
+      position: relative;
+    }
+
+    .meter-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 100%;
+      background: var(--red);
+    }
+
+    .meter-fill.mercy {
+      background: var(--yellow);
+      width: 0%;
+    }
+
+    .dialogue-box {
+      min-height: 148px;
+      border: 4px solid var(--fg);
+      padding: 16px 18px;
+      font-size: 24px;
+      line-height: 1.45;
+      white-space: pre-line;
+      position: relative;
+    }
+
+    .speaker {
+      color: var(--yellow);
+    }
+
+    .choice-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .action-btn {
+      border: 4px solid currentColor;
+      background: #000;
+      color: var(--orange);
+      min-height: 70px;
+      font: inherit;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: transform 0.08s steps(2), background 0.08s steps(2), color 0.08s steps(2);
+    }
+
+    .action-btn[data-type="act"] { color: var(--yellow); }
+    .action-btn[data-type="item"] { color: var(--blue); }
+    .action-btn[data-type="mercy"] { color: var(--yellow); }
+
+    .action-btn:hover,
+    .action-btn:focus-visible,
+    .action-btn.active {
+      background: #1a1a1a;
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .lore-panel {
+      padding: 18px;
+    }
+
+    .lore-panel h2,
+    .battle-panel h2 {
+      margin: 0 0 12px;
+      font-size: 28px;
+      text-transform: uppercase;
+      color: var(--yellow);
+    }
+
+    .lore-block {
+      border: 3px solid var(--fg);
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .lore-block h3 {
+      margin: 0 0 8px;
+      color: var(--blue);
+      text-transform: uppercase;
+      font-size: 22px;
+    }
+
+    .lore-block ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .tiny {
+      color: #c8c8c8;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .footer-note {
+      border: 4px solid var(--fg);
+      padding: 14px 18px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 900px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .dialogue-box {
+        font-size: 19px;
+        min-height: 170px;
+      }
+
+      .choice-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .action-btn {
+        min-height: 60px;
+        font-size: 18px;
+      }
+
+      .status-row {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="game-shell">
+    <section class="title-card">
+      <h1>Undertale Blue</h1>
+      <p>
+        A more faithful fangame mockup focused on <strong>Integrity</strong>: one screen, one battle, one liar with a flower face.
+        The goal is to feel closer to classic Undertale presentation—black space, chunky borders, menu verbs, deadpan text, and a battle rhythm built around a blue SOUL.
+      </p>
+    </section>
+
+    <section class="main-grid">
+      <section class="battle-panel">
+        <h2>Flowey Encounter // Ruins Entrance</h2>
+        <div class="arena-frame">
+          <canvas id="battle" width="640" height="480" aria-label="Undertale Blue battle scene"></canvas>
+        </div>
+
+        <div class="status-row">
+          <div><strong>INTEGRITY</strong> LV 1</div>
+          <div class="hp-wrap">
+            <strong>HP</strong>
+            <div class="meter"><span class="meter-fill" id="hpFill"></span></div>
+            <span id="hpText">20 / 20</span>
+          </div>
+          <div class="enemy-wrap">
+            <strong>MERCY</strong>
+            <div class="meter"><span class="meter-fill mercy" id="mercyFill"></span></div>
+            <span id="mercyText">0%</span>
+          </div>
+        </div>
+
+        <div class="dialogue-box" id="dialogueBox">
+* <span class="speaker">Flowey</span> hops from the flowers.
+* "Howdy!"
+* "You're new to the UNDERGROUND, aren'tcha?"
+        </div>
+
+        <div class="choice-row">
+          <button class="action-btn active" data-type="fight" id="fightBtn">Fight</button>
+          <button class="action-btn" data-type="act" id="actBtn">Act</button>
+          <button class="action-btn" data-type="item" id="itemBtn">Item</button>
+          <button class="action-btn" data-type="mercy" id="mercyBtn">Mercy</button>
+        </div>
+      </section>
+
+      <aside class="lore-panel">
+        <h2>What Changed</h2>
+
+        <div class="lore-block">
+          <h3>Presentation</h3>
+          <p>
+            This revision strips away the glossy web-app feel and aims for a much more Undertale-like interface: stark black backgrounds,
+            heavy white frames, bright menu colors, terse dialogue, and a battle box that is the clear center of attention.
+          </p>
+        </div>
+
+        <div class="lore-block">
+          <h3>Integrity Route Hook</h3>
+          <p>
+            Integrity plays differently from Frisk or Clover. The SOUL is blue from the start, so gravity is always active.
+            Jumps must be deliberate, which makes Flowey's rings and pellet drops feel unfair in exactly the way he wants.
+          </p>
+        </div>
+
+        <div class="lore-block">
+          <h3>Act Options</h3>
+          <ul>
+            <li><strong>Observe</strong> exposes the fake smile.</li>
+            <li><strong>Tell Truth</strong> raises Mercy faster.</li>
+            <li><strong>Mercy</strong> only works once Flowey loses control.</li>
+            <li><strong>Fight</strong> provokes nastier attacks.</li>
+          </ul>
+        </div>
+
+        <div class="lore-block">
+          <h3>Undertale Yellow Influence</h3>
+          <p>
+            The tone takes notes from how <em>Undertale Yellow</em> expands the setting while still respecting the original battle language:
+            clear motifs, route-sensitive dialogue, and one strong gameplay identity for the human SOUL.
+          </p>
+        </div>
+
+        <p class="tiny">
+          Controls: move with <strong>← →</strong> or <strong>A D</strong>, jump with <strong>↑</strong>, <strong>W</strong>, or <strong>Space</strong>.
+          Survive the attack waves, then use <strong>ACT</strong> and <strong>MERCY</strong> to break Flowey's script.
+        </p>
+      </aside>
+    </section>
+
+    <section class="footer-note">
+      * Fan-made homage page only. This is an original mockup inspired by Undertale and Undertale Yellow, not an official release.
+    </section>
+  </main>
+
+  <script>
+    const canvas = document.getElementById('battle');
+    const ctx = canvas.getContext('2d');
+    const hpFill = document.getElementById('hpFill');
+    const hpText = document.getElementById('hpText');
+    const mercyFill = document.getElementById('mercyFill');
+    const mercyText = document.getElementById('mercyText');
+    const dialogueBox = document.getElementById('dialogueBox');
+    const buttons = [...document.querySelectorAll('.action-btn')];
+
+    const arena = { x: 170, y: 165, w: 300, h: 160 };
+    const groundY = arena.y + arena.h - 20;
+
+    const state = {
+      frame: 0,
+      phase: 'intro',
+      wave: 0,
+      waveTimer: 0,
+      actionMenu: 'root',
+      hp: 20,
+      maxHp: 20,
+      mercy: 0,
+      floweyMood: 'friendly',
+      message: '* Flowey smiles without blinking.',
+      player: {
+        x: arena.x + 140,
+        y: groundY - 16,
+        w: 16,
+        h: 16,
+        vx: 0,
+        vy: 0,
+        grounded: true,
+        invuln: 0
+      },
+      bullets: [],
+      stars: Array.from({ length: 40 }, (_, i) => ({
+        x: (i * 71) % canvas.width,
+        y: (i * 37) % canvas.height,
+        s: i % 3 === 0 ? 2 : 1
+      }))
+    };
+
+    const keys = new Set();
+    const gravity = 0.38;
+
+    function setDialogue(text) {
+      state.message = text;
+      dialogueBox.innerHTML = text.replace(/\n/g, '<br>');
+    }
+
+    function updateMeters() {
+      const hpPct = Math.max(0, (state.hp / state.maxHp) * 100);
+      hpFill.style.width = `${hpPct}%`;
+      hpText.textContent = `${state.hp} / ${state.maxHp}`;
+      mercyFill.style.width = `${state.mercy}%`;
+      mercyText.textContent = `${state.mercy}%`;
+    }
+
+    function selectButton(type) {
+      buttons.forEach((button) => button.classList.toggle('active', button.dataset.type === type));
+    }
+
+    function spawnPelletCircle() {
+      const centerX = arena.x + arena.w / 2;
+      const centerY = arena.y + arena.h / 2 - 10;
+      for (let i = 0; i < 12; i++) {
+        const angle = (Math.PI * 2 * i) / 12;
+        state.bullets.push({
+          type: 'pellet',
+          x: centerX,
+          y: centerY,
+          vx: Math.cos(angle) * 1.7,
+          vy: Math.sin(angle) * 1.7,
+          r: 6,
+          color: '#ffffff',
+          life: 170
+        });
+      }
+      state.floweyMood = 'creepy';
+      setDialogue('* Flowey\'s smile stays the same.\n* The pellets do not.');
+    }
+
+    function spawnBlueRain() {
+      for (let i = 0; i < 9; i++) {
+        state.bullets.push({
+          type: 'drop',
+          x: arena.x + 18 + i * 31,
+          y: arena.y - 20 - Math.random() * 110,
+          vx: 0,
+          vy: 2.1 + Math.random() * 0.8,
+          r: 7,
+          color: '#4aa8ff',
+          life: 220
+        });
+      }
+      setDialogue('* Blue pellets fall.\n* Gravity suddenly feels personal.');
+    }
+
+    function spawnVines() {
+      for (let i = 0; i < 6; i++) {
+        state.bullets.push({
+          type: 'vine',
+          x: i % 2 === 0 ? arena.x - 10 : arena.x + arena.w + 10,
+          y: arena.y + 18 + i * 22,
+          vx: i % 2 === 0 ? 2.5 : -2.5,
+          vy: 0,
+          r: 10,
+          color: '#15d644',
+          life: 190
+        });
+      }
+      setDialogue('* Vines lash in from the dark.\n* Flowey stops pretending this is a lesson.');
+    }
+
+    function spawnWave() {
+      const waves = [spawnPelletCircle, spawnBlueRain, spawnVines];
+      waves[state.wave % waves.length]();
+      state.wave += 1;
+      state.waveTimer = 0;
+    }
+
+    function movePlayer() {
+      const player = state.player;
+      const left = keys.has('ArrowLeft') || keys.has('a');
+      const right = keys.has('ArrowRight') || keys.has('d');
+      const jump = keys.has('ArrowUp') || keys.has('w') || keys.has(' ');
+
+      if (left) player.vx = Math.max(player.vx - 0.45, -3.3);
+      if (right) player.vx = Math.min(player.vx + 0.45, 3.3);
+      if (!left && !right) player.vx *= 0.76;
+
+      if (jump && player.grounded) {
+        player.vy = -7.2;
+        player.grounded = false;
+      }
+
+      player.vy += gravity;
+      player.x += player.vx;
+      player.y += player.vy;
+
+      if (player.y + player.h >= groundY) {
+        player.y = groundY - player.h;
+        player.vy = 0;
+        player.grounded = true;
+      }
+
+      player.x = Math.max(arena.x + 6, Math.min(arena.x + arena.w - player.w - 6, player.x));
+      if (player.invuln > 0) player.invuln -= 1;
+    }
+
+    function hurtPlayer() {
+      if (state.player.invuln > 0 || state.phase === 'won' || state.phase === 'lost') return;
+      state.hp = Math.max(0, state.hp - 2);
+      state.player.invuln = 55;
+      state.floweyMood = 'evil';
+      updateMeters();
+      setDialogue('* Flowey grins.\n* "You really thought this was going to be easy?"');
+      if (state.hp === 0) {
+        state.phase = 'lost';
+        setDialogue('* Your SOUL shattered.\n* Refresh to try the Integrity route again.');
+      }
+    }
+
+    function updateBullets() {
+      const heartX = state.player.x + state.player.w / 2;
+      const heartY = state.player.y + state.player.h / 2;
+
+      state.bullets.forEach((bullet) => {
+        bullet.x += bullet.vx;
+        bullet.y += bullet.vy;
+        bullet.life -= 1;
+      });
+
+      state.bullets = state.bullets.filter((bullet) => {
+        const dx = heartX - bullet.x;
+        const dy = heartY - bullet.y;
+        const rr = bullet.r + 5;
+        if (dx * dx + dy * dy <= rr * rr) hurtPlayer();
+        return bullet.life > 0 && bullet.x > arena.x - 40 && bullet.x < arena.x + arena.w + 40 && bullet.y > arena.y - 60 && bullet.y < arena.y + arena.h + 60;
+      });
+    }
+
+    function drawPixelText(text, x, y, color = '#ffffff', size = 18) {
+      ctx.fillStyle = color;
+      ctx.font = `${size}px Courier New`;
+      ctx.fillText(text, x, y);
+    }
+
+    function drawHeart(x, y, color) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(0, 4);
+      ctx.bezierCurveTo(0, -2, -8, -2, -8, 5);
+      ctx.bezierCurveTo(-8, 11, -3, 14, 0, 18);
+      ctx.bezierCurveTo(3, 14, 8, 11, 8, 5);
+      ctx.bezierCurveTo(8, -2, 0, -2, 0, 4);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawFlowey() {
+      const x = 320;
+      const y = 88 + Math.sin(state.frame / 18) * 2;
+      const petalColor = state.floweyMood === 'friendly' ? '#ffd84d' : '#ffe16c';
+
+      for (let i = 0; i < 8; i++) {
+        const angle = (Math.PI * 2 * i) / 8;
+        ctx.fillStyle = petalColor;
+        ctx.beginPath();
+        ctx.ellipse(x + Math.cos(angle) * 28, y + Math.sin(angle) * 28, 10, 18, angle, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(x, y, 22, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(x - 10, y - 7, 5, 5);
+      ctx.fillRect(x + 5, y - 7, 5, 5);
+      ctx.beginPath();
+      if (state.floweyMood === 'evil' || state.floweyMood === 'creepy') {
+        ctx.arc(x, y + 4, 10, 0, Math.PI, false);
+      } else {
+        ctx.arc(x, y + 10, 10, 0, Math.PI, true);
+      }
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.fillStyle = '#15d644';
+      ctx.fillRect(x - 2, y + 22, 4, 46);
+      ctx.fillRect(x - 16, y + 46, 32, 4);
+    }
+
+    function drawArena() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      state.stars.forEach((star, i) => {
+        ctx.fillStyle = i % 5 === 0 ? '#4aa8ff' : '#ffffff';
+        ctx.fillRect(star.x, (star.y + state.frame * 0.15) % canvas.height, star.s, star.s);
+      });
+
+      drawFlowey();
+
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(arena.x, arena.y, arena.w, arena.h);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(arena.x, groundY, arena.w, 4);
+
+      state.bullets.forEach((bullet) => {
+        ctx.fillStyle = bullet.color;
+        if (bullet.type === 'vine') {
+          ctx.fillRect(bullet.x - 10, bullet.y - 4, 20, 8);
+        } else {
+          ctx.beginPath();
+          ctx.arc(bullet.x, bullet.y, bullet.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+
+      if (!(state.player.invuln > 0 && Math.floor(state.player.invuln / 5) % 2 === 0)) {
+        drawHeart(state.player.x + 8, state.player.y + 6, '#4aa8ff');
+      }
+
+      drawPixelText('FLOWEY', 40, 46, '#ffffff', 28);
+      drawPixelText('HP 9999?', 40, 74, '#7f7f7f', 18);
+      drawPixelText('SOUL: BLUE', 480, 46, '#4aa8ff', 20);
+      drawPixelText('TRAIT: INTEGRITY', 420, 74, '#ffffff', 18);
+    }
+
+    function update() {
+      state.frame += 1;
+
+      if (state.phase === 'intro' && state.frame > 70) {
+        state.phase = 'battle';
+        setDialogue('* The air goes still.\n* Flowey wants to see what kind of person you really are.');
+      }
+
+      if (state.phase === 'battle') {
+        movePlayer();
+        updateBullets();
+        state.waveTimer += 1;
+        if (state.waveTimer >= 110) spawnWave();
+      }
+
+      drawArena();
+
+      if (state.phase !== 'lost') {
+        requestAnimationFrame(update);
+      }
+    }
+
+    function addMercy(amount, line) {
+      state.mercy = Math.min(100, state.mercy + amount);
+      updateMeters();
+      setDialogue(line);
+      if (state.mercy >= 100) {
+        state.phase = 'won';
+        state.bullets = [];
+        state.floweyMood = 'friendly';
+        setDialogue('* Flowey stops laughing.\n* He hates that you understood him.\n* The way forward opens for Integrity.');
+      }
+    }
+
+    document.getElementById('fightBtn').addEventListener('click', () => {
+      selectButton('fight');
+      if (state.phase === 'won' || state.phase === 'lost') return;
+      state.floweyMood = 'evil';
+      spawnVines();
+      setDialogue('* You raise your hands to fight.\n* Flowey is delighted by the mistake.');
+    });
+
+    document.getElementById('actBtn').addEventListener('click', () => {
+      selectButton('act');
+      if (state.phase === 'won' || state.phase === 'lost') return;
+      if (state.mercy < 50) {
+        addMercy(34, '* You tell the truth.\n* "I know you\'re not helping me."\n* Flowey\'s face twitches.');
+      } else {
+        addMercy(26, '* You keep staring back without fear.\n* Flowey hates honest people.');
+      }
+    });
+
+    document.getElementById('itemBtn').addEventListener('click', () => {
+      selectButton('item');
+      if (state.phase === 'won' || state.phase === 'lost') return;
+      state.hp = Math.min(state.maxHp, state.hp + 5);
+      updateMeters();
+      setDialogue('* You eat a packed lunch from the surface.\n* It tastes like rules, routine, and home.');
+    });
+
+    document.getElementById('mercyBtn').addEventListener('click', () => {
+      selectButton('mercy');
+      if (state.phase === 'won' || state.phase === 'lost') return;
+      if (state.mercy >= 70) {
+        addMercy(30, '* You spare him anyway.\n* Not because he earned it.\n* Because you decided who you are.');
+      } else {
+        setDialogue('* Spare?\n* Flowey isn\'t ready to stop playing.');
+      }
+    });
+
+    window.addEventListener('keydown', (event) => {
+      const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+      keys.add(key);
+      if (["ArrowUp", "ArrowLeft", "ArrowRight", " "].includes(event.key)) event.preventDefault();
+    });
+
+    window.addEventListener('keyup', (event) => {
+      const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+      keys.delete(key);
+    });
+
+    updateMeters();
+    update();
+  </script>
+</body>
+</html>
